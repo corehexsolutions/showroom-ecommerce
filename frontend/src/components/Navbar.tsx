@@ -6,8 +6,9 @@ import { Search, Heart, ShoppingBag, User, Menu, X } from "lucide-react";
 const links = [
   { label: "Home", to: "/" },
   { label: "Sofas", to: "/sofas" },
-  { label: "Living Room", to: "/sofas" },
-  { label: "Recliners", to: "/sofas" },
+  { label: "Furniture", to: "/sofas" },
+  { label: "Curtains", to: "/sofas" },
+  { label: "Clothes", to: "/sofas" },
   { label: "Collections", to: "/collections" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
