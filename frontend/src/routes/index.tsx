@@ -13,6 +13,8 @@ import {
   ArrowRight,
   Star,
   Instagram,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 import hero from "@/assets/hero-living.jpg";
@@ -44,6 +46,7 @@ import r3 from "@/assets/review-3.jpg";
 import { ProductCard, type Product } from "@/components/ProductCard";
 import { CollectionCard } from "@/components/CollectionCard";
 import { SectionHeader } from "@/components/SectionHeader";
+import SofaCompareSlider from "@/components/SofaCompareSlider";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -207,6 +210,9 @@ function Home() {
           ))}
         </div>
       </section>
+
+
+      <SofaCompareSlider />
 
       {/* BEST SELLERS */}
       <section id="bestsellers" className="py-24 md:py-32">

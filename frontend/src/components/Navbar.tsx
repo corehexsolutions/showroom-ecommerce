@@ -42,14 +42,16 @@ export function Navbar() {
         className="sticky top-0 z-50 border-b backdrop-blur-lg"
       >
         <div className="container-luxury flex items-center justify-between gap-6">
-          <Link to="/" className="shrink-0">
+          {/* <Link to="/" className="shrink-0">
             <div className="font-display text-2xl md:text-[26px] tracking-tight text-charcoal leading-none">
               Decor<span className="italic text-walnut"> Den</span>
             </div>
             <div className="text-[9px] tracking-[0.4em] uppercase text-muted-foreground mt-1">
               Sofa Atelier
             </div>
-          </Link>
+          </Link> */}
+
+          <img src="/logo.png" alt="Decor Den" className="h-12" />
 
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) => (
@@ -60,7 +62,7 @@ export function Navbar() {
                 className="text-[12px] tracking-[0.2em] uppercase text-charcoal/80 hover:text-walnut transition-colors relative group"
               >
                 {l.label}
-                <span className="absolute left-0 -bottom-1 h-px w-0 bg-walnut transition-all duration-300 group-hover:w-full" />
+                <span className="absolute left-0 -bottom-1 h-px w-0 bg-[var(--brand-green)] transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
           </nav>
