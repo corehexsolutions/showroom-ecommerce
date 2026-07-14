@@ -117,6 +117,9 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
 
+    console.log("ID from params:", req.params.id);
+
+
     const product = await Product.findById(req.params.id);
 
     if (!product) {
