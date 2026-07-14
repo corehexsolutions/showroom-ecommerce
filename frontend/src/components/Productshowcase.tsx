@@ -81,27 +81,26 @@ function Gallery({ images, name }: { images: string[]; name: string }) {
   if (images.length === 0) {
     return <div className="aspect-[4/3] w-full bg-stone-100" />;
   }
-
   return (
     <div className="flex flex-col gap-3">
       <div className="w-full overflow-hidden bg-stone-100">
         <img
-          src={images[active]}
+          src={images[active].url}
           alt={name}
           className="w-full object-cover"
         />
       </div>
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto">
-          {images.map((src, i) => (
+          {images.map((img, i) => (
             <button
-              key={src + i}
+              key={img + i}
               onClick={() => setActive(i)}
               className={`h-16 w-16 shrink-0 overflow-hidden rounded-sm border ${
                 i === active ? "border-stone-900" : "border-transparent"
               }`}
             >
-              <img src={src} alt={`${name} thumbnail ${i + 1}`} className="h-full w-full object-cover" />
+              <img src={img.url} alt={`${name} thumbnail ${i + 1}`} className="h-full w-full object-cover" />
             </button>
           ))}
         </div>
