@@ -1,5 +1,6 @@
 const Product = require("../models/product.model");
 const uploadToCloudinary = require("../utils/uploadToCloudinary");
+const cloudinary = require("../config/cloudinary");
 
 
 // Get all active products
@@ -50,10 +51,19 @@ const getProductBySlug = async (req, res) => {
 // Create product
 const createProduct = async (req, res) => {
   try {
+    // Parse multipart JSON fields
+    const productData = {
+      ...req.body,
+      tags: Array.isArray(req.body.tags)
+        ? req.body.tags
+        : JSON.parse(req.body.tags || "[]"),
+      variants: JSON.parse(req.body.variants || "[]"),
+      badges: JSON.parse(req.body.badges || "[]"),
+      accordion: JSON.parse(req.body.accordion || "[]"),
+    };
 
-    const exists = await Product.findOne({
-      slug: req.body.slug,
-    });
+    // Check slug first
+    const exists = await Product.findOne({ slug: productData.slug });
 
     if (exists) {
       return res.status(400).json({
@@ -62,49 +72,44 @@ const createProduct = async (req, res) => {
       });
     }
 
+    // Validate required fields BEFORE uploading images
+    const tempProduct = new Product(productData);
+    const validationError = tempProduct.validateSync();
+
+    if (validationError) {
+      return res.status(400).json({
+        success: false,
+        message: validationError.message,
+      });
+    }
+
+    // Upload images only after validation passes
     const uploadedImages = [];
 
-    if (req.files && req.files.length > 0) {
-
+    if (req.files?.length) {
       for (const file of req.files) {
-
         const result = await uploadToCloudinary(file);
 
         uploadedImages.push({
           url: result.secure_url,
           public_id: result.public_id,
         });
-
       }
-
     }
 
-    const product = await Product.create({
+    tempProduct.images = uploadedImages;
 
-      ...req.body,
+    await tempProduct.save();
 
-      images: uploadedImages,
-
-    });
-
-    res.status(201).json({
-
+    return res.status(201).json({
       success: true,
-
-      product,
-
+      product: tempProduct,
     });
-
   } catch (err) {
-
-    res.status(500).json({
-
+    return res.status(500).json({
       success: false,
-
       message: err.message,
-
     });
-
   }
 };
 
