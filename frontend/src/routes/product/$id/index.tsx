@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from "react";
 import ProductShowcase, { Product } from "@/components/Productshowcase";
+import api from "@/lib/axios";
 
 export const Route = createFileRoute('/product/$id/')({
   component: ProductPage,
@@ -8,15 +9,22 @@ export const Route = createFileRoute('/product/$id/')({
 
 
 async function fetchProduct(id: string): Promise<Product> {
-  const res = await fetch(`/api/products/${id}`);
+  try {
+    const res = await api.get(
+      `https://decorden.up.railway.app/api/products/${id}`
+    );
 
-  if (!res.ok) {
-    throw new Error(`Product not found (status ${res.status})`);
+    console.log(res);
+
+    return mapProduct(res.data);
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        `Product not found (status ${error.response?.status})`
+    );
   }
-
-  const data = await res.json();
-  return mapProduct(data);
 }
+
 
 // Adapt your backend's response shape to the Product type ProductShowcase expects.
 function mapProduct(data: any): Product {
