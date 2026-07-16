@@ -31,20 +31,20 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         />
 
         {off > 0 && (
-          <span className="absolute top-4 left-4 bg-charcoal text-ivory text-[10px] tracking-[0.2em] uppercase px-3 py-1.5">
+          <span className="absolute top-4 left-4 bg-[var(--brand-deep-forest-green)] text-ivory text-[10px] tracking-[0.2em] uppercase px-3 py-1.5">
             −{off}%
           </span>
         )}
 
         <button
           aria-label="Wishlist"
-          className="absolute top-4 right-4 h-10 w-10 rounded-full bg-ivory/95 backdrop-blur text-charcoal grid place-items-center opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-charcoal hover:text-ivory"
+          className="absolute top-4 right-4 h-10 w-10 rounded-full bg-ivory/95 backdrop-blur text-[var(--brand-green-muted)] grid place-items-center opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-[var(--brand-deep-forest-green)] hover:text-ivory"
         >
           <Heart className="h-4 w-4" />
         </button>
 
         <div className="absolute inset-x-4 bottom-4 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-          <button className="w-full bg-ivory/95 backdrop-blur text-charcoal py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-charcoal hover:text-ivory transition-colors">
+          <button className="w-full bg-ivory/95 backdrop-blur text-charcoal py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] hover:text-ivory transition-colors">
             <ShoppingBag className="h-3.5 w-3.5" />
             Add to Cart
           </button>

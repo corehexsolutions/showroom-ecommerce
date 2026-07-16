@@ -108,7 +108,6 @@ function Home() {
   return (
     <>
       {/* HERO */}
-      {/* HERO */}
       <section className="relative overflow-hidden bg-ivory">
         <div className="relative h-[92vh] min-h-[640px] max-h-[900px] w-full">
           <motion.div
@@ -167,10 +166,10 @@ function Home() {
                 transition={{ duration: 0.8, delay: 1 }}
                 className="mt-10 flex flex-wrap gap-4"
               >
-                <a href="#bestsellers" className="btn-primary bg-ivory text-charcoal border-ivory hover:bg-beige-warm hover:border-beige-warm hover:text-charcoal">
+                <a href="#bestsellers" className="btn-primary bg-ivory text-[var(--brand-green-muted)] border-ivory hover:bg-beige-warm hover:border-beige-warm hover:text-[var(--brand-green-muted)]">
                   Shop Now <ArrowRight className="h-4 w-4" />
                 </a>
-                <a href="#collections" className="btn-ghost-light">
+                <a href="#collections" className="btn-ghost-light-green-hero">
                   Explore Collection
                 </a>
               </motion.div>
@@ -203,7 +202,7 @@ function Home() {
             >
               <f.icon className="h-6 w-6 text-walnut shrink-0" strokeWidth={1.4} />
               <div className="min-w-0">
-                <div className="font-display text-lg text-charcoal">{f.title}</div>
+                <div className="font-display text-lg text-[charcoal]">{f.title}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">{f.text}</div>
               </div>
             </motion.div>
@@ -247,12 +246,12 @@ function Home() {
           />
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <CollectionCard title="L-Shape Sofas" count="24 Designs" image={colL} index={0} />
-            <CollectionCard title="Fabric Sofas" count="42 Designs" image={colFabric} index={1} />
-            <CollectionCard title="Leather Sofas" count="28 Designs" image={colLeather} index={2} />
-            <CollectionCard title="Wooden Sofas" count="18 Designs" image={colWood} index={3} />
-            <CollectionCard title="Recliners" count="21 Designs" image={colRecliner} index={4} />
-            <CollectionCard title="Sectionals" count="16 Designs" image={colSectional} index={5} />
+            <CollectionCard title="L-Shape Sofas" count="24" image={colL} index={0} />
+            <CollectionCard title="Fabric Sofas" count="42" image={colFabric} index={1} />
+            <CollectionCard title="Leather Sofas" count="28" image={colLeather} index={2} />
+            <CollectionCard title="Wooden Sofas" count="18" image={colWood} index={3} />
+            <CollectionCard title="Recliners" count="21" image={colRecliner} index={4} />
+            <CollectionCard title="Sectionals" count="16" image={colSectional} index={5} />
           </div>
         </div>
       </section>
@@ -279,7 +278,7 @@ function Home() {
               transition={{ duration: 0.9 }}
               className="max-w-xl text-ivory"
             >
-              <p className="text-[11px] tracking-[0.4em] uppercase text-beige-warm">The Signature Edit</p>
+              <p className="text-[11px] tracking-[0.4em] uppercase text-ivory/70">The Signature Edit</p>
               <h2 className="mt-6 font-display text-5xl md:text-6xl lg:text-7xl leading-[1] tracking-tight">
                 Heirloom sofas,<br />
                 <span className="italic">honestly made.</span>
@@ -288,7 +287,7 @@ function Home() {
                 Ninety-two joinery steps. Zero shortcuts. A sofa built to outlive its trends.
               </p>
               <div className="mt-9">
-                <a href="/sofas" className="btn-ghost-light">Discover the Craft</a>
+                <a href="/sofas" className="btn-ghost-light-green-fill">Discover the Craft</a>
               </div>
             </motion.div>
           </div>
@@ -316,7 +315,7 @@ function Home() {
                 <w.icon className="h-8 w-8 text-walnut mb-6" strokeWidth={1.2} />
                 <h3 className="font-display text-2xl text-charcoal">{w.title}</h3>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{w.text}</p>
-                <div className="absolute bottom-0 left-0 h-px w-0 bg-walnut group-hover:w-full transition-all duration-700" />
+                <div className="absolute bottom-0 left-0 h-px w-0 bg-[var(--brand-green-muted-dark)] group-hover:w-full transition-all duration-700" />
               </motion.div>
             ))}
           </div>
@@ -340,7 +339,7 @@ function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.9 }}
           >
-            <p className="text-[11px] tracking-[0.4em] uppercase text-beige-warm">Our Atelier</p>
+            <p className="text-[11px] tracking-[0.4em] uppercase text-[var(--brand-green-muted-dark)]">Our Atelier</p>
             <h2 className="mt-5 font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05]">
               Twenty-eight years<br />
               of quiet <span className="italic text-beige-warm">obsession</span>.
@@ -350,7 +349,7 @@ function Home() {
               should be built the way it once was: patient hands, honest materials, and
               time. Nothing has changed since, except the size of our door.
             </p>
-            <div className="mt-10 grid grid-cols-3 gap-6 border-t border-ivory/15 pt-8">
+            <div className="mt-10 grid grid-cols-3 gap-6 border-t border-[var(--brand-green-muted-dark)]/12 pt-8">
               {[
                 { k: "28", l: "Years of craft" },
                 { k: "14K+", l: "Sofas delivered" },
@@ -358,7 +357,7 @@ function Home() {
               ].map((s) => (
                 <div key={s.l}>
                   <div className="font-display text-4xl md:text-5xl text-beige-warm">{s.k}</div>
-                  <div className="text-xs tracking-[0.2em] uppercase text-ivory/60 mt-2">{s.l}</div>
+                  <div className="text-xs tracking-[0.2em] uppercase text-[var(--brand-green-muted)]/60 mt-2">{s.l}</div>
                 </div>
               ))}
             </div>
@@ -404,7 +403,7 @@ function Home() {
                 of instinct.
               </p>
               <div className="mt-8">
-                <a href="/contact" className="btn-primary">Book Consultation</a>
+                <a href="/contact" className="btn-primary-green">Book Consultation</a>
               </div>
             </div>
           </div>
@@ -429,16 +428,16 @@ function Home() {
                 transition={{ duration: 0.7, delay: i * 0.1 }}
                 className="p-8 md:p-10 bg-ivory border border-line flex flex-col"
               >
-                <div className="flex gap-1 text-walnut">
+                <div className="flex gap-1 text-[var(--brand-green-muted-dark)]">
                   {Array.from({ length: 5 }).map((_, k) => (
-                    <Star key={k} className="h-4 w-4 fill-walnut" />
+                    <Star key={k} className="h-4 w-4 fill-[var(--brand-green-muted-dark)]" />
                   ))}
                 </div>
                 <blockquote className="mt-6 font-display text-xl md:text-2xl text-charcoal leading-snug flex-1">
                   "{r.text}"
                 </blockquote>
-                <figcaption className="mt-8 flex items-center gap-4 pt-6 border-t border-line">
-                  <img src={r.img} alt={r.name} loading="lazy" className="h-12 w-12 rounded-full object-cover" />
+                <figcaption className="mt-8 flex items-center gap-4 pt-6 border-t border-[var(--brand-green-muted-dark)]/15">
+                  <img src={r.img} alt={r.name} loading="lazy" className="h-12 w-12 rounded-full object-cover border border-[var(--brand-green-muted-dark)]" />
                   <div>
                     <div className="text-sm font-medium text-charcoal">{r.name}</div>
                     <div className="text-xs text-muted-foreground mt-0.5">{r.role}</div>

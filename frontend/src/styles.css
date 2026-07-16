@@ -67,11 +67,14 @@
   --secondary: oklch(0.96 0.008 70);
   --secondary-foreground: oklch(0.18 0.01 60);
 
-   /* Brand */
+  /* Brand */
 
   --brand-green: oklch(0.68 0.20 145);
   --brand-green-dark: oklch(0.55 0.18 145);
   --brand-green-light: oklch(0.93 0.04 145);
+  --brand-green-muted: #79B43C;
+  --brand-green-muted-dark: #6eaa35;
+  --brand-deep-forest-green: #456D24;
 
   /* Accent */
 
@@ -96,9 +99,11 @@
   * {
     border-color: var(--color-border);
   }
+
   html {
     scroll-behavior: smooth;
   }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -106,13 +111,18 @@
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "ss01", "cv02";
   }
-  h1, h2, h3, h4, h5 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     font-family: var(--font-display);
     font-weight: 500;
     letter-spacing: -0.01em;
   }
 
-  
+
 }
 
 @utility container-luxury {
@@ -126,7 +136,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: var(--color-walnut);
+  color: var(--brand-deep-forest-green);
   font-weight: 500;
 }
 
@@ -144,6 +154,7 @@
   font-weight: 500;
   transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   border: 1px solid var(--color-charcoal);
+
   &:hover {
     background: var(--color-walnut-dark);
     border-color: var(--color-walnut-dark);
@@ -166,6 +177,7 @@
   font-weight: 500;
   border: 1px solid var(--color-charcoal);
   transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
   &:hover {
     background: var(--color-charcoal);
     color: var(--color-ivory);
@@ -186,9 +198,113 @@
   text-transform: uppercase;
   font-weight: 500;
   transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
   &:hover {
     background: var(--color-ivory);
     color: var(--color-charcoal);
     border-color: var(--color-ivory);
+  }
+}
+
+
+@utility btn-ghost-light-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 2rem;
+  background: transparent;
+  color: var(--color-ivory);
+  border: 1px solid oklch(1 0 0 / 0.6);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  &:hover {
+    background: var(--color-ivory);
+    color: var(--brand-green-muted);
+    border-color: var(--color-ivory);
+  }
+}
+
+@utility btn-ghost-light-green-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 2rem;
+  background: transparent;
+  color: var(--color-ivory);
+  border: 1px solid oklch(1 0 0 / 0.6);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  &:hover {
+    background: var(--color-ivory);
+    color: var(--brand-green-muted);
+
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(121, 180, 60, 0.12);
+  }
+}
+
+@utility btn-ghost-light-green-fill {
+   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 2rem;
+  background: transparent;
+  color: var(--color-ivory);
+  border: 1px solid oklch(1 0 0 / 0.6);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  &:hover {
+    background: #79B43C;
+    color: white;
+    border-color: #79B43C;
+  }
+}
+
+@utility btn-primary-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 2rem;
+
+  background: #456D24; /* Deep forest green */
+  border: 1px solid #456D24;
+  color: var(--color-ivory);
+
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  &:hover {
+    background: var(--brand-green-muted-dark); /* #79B43C */
+    border-color: var(--brand-green-muted);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow:
+      0 12px 32px rgba(121, 180, 60, 0.22),
+      0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
   }
 }

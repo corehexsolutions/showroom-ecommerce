@@ -62,7 +62,7 @@ export function Navbar() {
                 className="text-[12px] tracking-[0.2em] uppercase text-charcoal/80 hover:text-walnut transition-colors relative group"
               >
                 {l.label}
-                <span className="absolute left-0 -bottom-1 h-px w-0 bg-[var(--brand-green)] transition-all duration-300 group-hover:w-full" />
+                <span className="absolute left-0 -bottom-1 h-px w-0 bg-[var(--brand-green-muted)] transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
           </nav>
