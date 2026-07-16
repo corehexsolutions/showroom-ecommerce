@@ -68,7 +68,7 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1 md:gap-2">
-            <IconBtn ariaLabel="Search"><Search className="h-[18px] w-[18px]" /></IconBtn>
+            {/* <IconBtn ariaLabel="Search"><Search className="h-[18px] w-[18px]" /></IconBtn> */}
             <IconBtn ariaLabel="Wishlist"><Heart className="h-[18px] w-[18px]" /></IconBtn>
             <IconBtn ariaLabel="Account"><User className="h-[18px] w-[18px]" /></IconBtn>
             <IconBtn ariaLabel="Cart" badge={2}><ShoppingBag className="h-[18px] w-[18px]" /></IconBtn>

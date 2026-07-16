@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Star, Heart, ShoppingBag } from "lucide-react";
+import { Star, Heart, ShoppingBag, Zap } from "lucide-react";
 
 export type Product = {
   id: string;
@@ -43,10 +43,15 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <Heart className="h-4 w-4" />
         </button>
 
-        <div className="absolute inset-x-4 bottom-4 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-          <button className="w-full bg-ivory/95 backdrop-blur text-charcoal py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] hover:text-ivory transition-colors">
+        <div className="absolute inset-x-4 bottom-4 flex gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+          <button className="flex-1 bg-ivory/95 backdrop-blur text-charcoal py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] hover:text-ivory transition-colors">
             <ShoppingBag className="h-3.5 w-3.5" />
             Add to Cart
+          </button>
+
+          <button className="flex-1 bg-[var(--brand-deep-forest-green)] text-ivory py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] transition-colors">
+            <Zap className="h-3.5 w-3.5" />
+            Buy Now
           </button>
         </div>
       </div>
