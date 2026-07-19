@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { Star, Heart, ShoppingBag, Zap } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export type Product = {
   id: string;
+  slug: string;
   name: string;
   category: string;
   image: string;
@@ -12,70 +14,105 @@ export type Product = {
   reviews: number;
 };
 
-export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
-  const off = Math.round(((product.original - product.price) / product.original) * 100);
+export function ProductCard({
+  product,
+  index = 0,
+}: {
+  product: Product;
+  index?: number;
+}) {
+  const off = Math.round(
+    ((product.original - product.price) / product.original) * 100
+  );
+
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.2, 0.8, 0.2, 1] }}
-      className="group"
+    <Link
+      to="/product/$slug"
+      params={{ slug: product.slug }}
+      className="block" 
     >
-      <div className="relative overflow-hidden bg-beige aspect-[4/5] rounded-sm">
-        <img
-          src={product.image}
-          alt={product.name}
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
-        />
+      <motion.article
+        initial={{ opacity: 0, y: 32 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{
+          duration: 0.7,
+          delay: index * 0.08,
+          ease: [0.2, 0.8, 0.2, 1],
+        }}
+        className="group cursor-pointer"
+      >
+        <div className="relative overflow-hidden bg-beige aspect-[4/5] rounded-sm">
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+          />
 
-        {off > 0 && (
-          <span className="absolute top-4 left-4 bg-[var(--brand-deep-forest-green)] text-ivory text-[10px] tracking-[0.2em] uppercase px-3 py-1.5">
-            −{off}%
-          </span>
-        )}
-
-        <button
-          aria-label="Wishlist"
-          className="absolute top-4 right-4 h-10 w-10 rounded-full bg-ivory/95 backdrop-blur text-[var(--brand-green-muted)] grid place-items-center opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-[var(--brand-deep-forest-green)] hover:text-ivory"
-        >
-          <Heart className="h-4 w-4" />
-        </button>
-
-        <div className="absolute inset-x-4 bottom-4 flex gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-          <button className="flex-1 bg-ivory/95 backdrop-blur text-charcoal py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] hover:text-ivory transition-colors">
-            <ShoppingBag className="h-3.5 w-3.5" />
-            Add to Cart
-          </button>
-
-          <button className="flex-1 bg-[var(--brand-deep-forest-green)] text-ivory py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] transition-colors">
-            <Zap className="h-3.5 w-3.5" />
-            Buy Now
-          </button>
-        </div>
-      </div>
-
-      <div className="pt-5">
-        <div className="flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-walnut mb-1.5">{product.category}</p>
-            <h3 className="font-display text-xl text-charcoal truncate">{product.name}</h3>
-          </div>
-          <div className="flex items-center gap-1 shrink-0 text-charcoal">
-            <Star className="h-3.5 w-3.5 fill-walnut text-walnut" />
-            <span className="text-xs">{product.rating}</span>
-          </div>
-        </div>
-        <div className="mt-3 flex items-baseline gap-3">
-          <span className="text-lg text-charcoal font-medium">₹{product.price.toLocaleString("en-IN")}</span>
-          {product.original > product.price && (
-            <span className="text-sm text-muted-foreground line-through">
-              ₹{product.original.toLocaleString("en-IN")}
+          {off > 0 && (
+            <span className="absolute top-4 left-4 bg-[var(--brand-deep-forest-green)] text-ivory text-[10px] tracking-[0.2em] uppercase px-3 py-1.5">
+              −{off}%
             </span>
           )}
+
+          <button
+            onClick={(e) => e.preventDefault()}
+            aria-label="Wishlist"
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-ivory/95 backdrop-blur text-[var(--brand-green-muted)] grid place-items-center opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-[var(--brand-deep-forest-green)] hover:text-ivory"
+          >
+            <Heart className="h-4 w-4" />
+          </button>
+
+          <div className="absolute inset-x-4 bottom-4 flex gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+            <button
+              onClick={(e) => e.preventDefault()}
+              className="flex-1 bg-ivory/95 backdrop-blur text-charcoal py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] hover:text-ivory transition-colors"
+            >
+              <ShoppingBag className="h-3.5 w-3.5" />
+              Add to Cart
+            </button>
+
+            <button
+              onClick={(e) => e.preventDefault()}
+              className="flex-1 bg-[var(--brand-deep-forest-green)] text-ivory py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] transition-colors"
+            >
+              <Zap className="h-3.5 w-3.5" />
+              Buy Now
+            </button>
+          </div>
         </div>
-      </div>
-    </motion.article>
+
+        <div className="pt-5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-walnut mb-1.5">
+                {product.category}
+              </p>
+              <h3 className="font-display text-xl text-charcoal truncate">
+                {product.name}
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-1 shrink-0 text-charcoal">
+              <Star className="h-3.5 w-3.5 fill-walnut text-walnut" />
+              <span className="text-xs">{product.rating}</span>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-baseline gap-3">
+            <span className="text-lg text-charcoal font-medium">
+              ₹{product.price.toLocaleString("en-IN")}
+            </span>
+
+            {product.original > product.price && (
+              <span className="text-sm text-muted-foreground line-through">
+                ₹{product.original.toLocaleString("en-IN")}
+              </span>
+            )}
+          </div>
+        </div>
+      </motion.article>
+    </Link>
   );
 }

@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SofasRouteImport } from './routes/sofas'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as AboutRouteImport } from './routes/about'
@@ -19,6 +21,16 @@ import { Route as ProductIdIndexRouteImport } from './routes/product/$id/index'
 const SofasRoute = SofasRouteImport.update({
   id: '/sofas',
   path: '/sofas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -52,6 +64,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
   '/product/$id/': typeof ProductIdIndexRoute
 }
@@ -60,6 +74,8 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
   '/product/$id': typeof ProductIdIndexRoute
 }
@@ -69,21 +85,40 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
   '/product/$id/': typeof ProductIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about' | '/collections' | '/contact' | '/sofas' | '/product/$id/'
+    | '/'
+    | '/about'
+    | '/collections'
+    | '/contact'
+    | '/login'
+    | '/signup'
+    | '/sofas'
+    | '/product/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/collections' | '/contact' | '/sofas' | '/product/$id'
+  to:
+    | '/'
+    | '/about'
+    | '/collections'
+    | '/contact'
+    | '/login'
+    | '/signup'
+    | '/sofas'
+    | '/product/$id'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/collections'
     | '/contact'
+    | '/login'
+    | '/signup'
     | '/sofas'
     | '/product/$id/'
   fileRoutesById: FileRoutesById
@@ -93,6 +128,8 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
   SofasRoute: typeof SofasRoute
   ProductIdIndexRoute: typeof ProductIdIndexRoute
 }
@@ -104,6 +141,20 @@ declare module '@tanstack/react-router' {
       path: '/sofas'
       fullPath: '/sofas'
       preLoaderRoute: typeof SofasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -149,6 +200,8 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
   SofasRoute: SofasRoute,
   ProductIdIndexRoute: ProductIdIndexRoute,
 }

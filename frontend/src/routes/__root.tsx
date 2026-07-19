@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -112,14 +113,25 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+
+  const hideLayout = [
+    "/login",
+    "/signup",
+  ].includes(pathname);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
+        {!hideLayout && <Navbar />}
+
         <main>
           <Outlet />
         </main>
-        <Footer />
+
+        {!hideLayout && <Footer />}
       </div>
     </QueryClientProvider>
   );
