@@ -1,10 +1,56 @@
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { loginUser } from "@/lib/auth";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setError("");
+
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const data = await loginUser({
+        email,
+        password,
+      });
+
+      console.log("Login successful:", data);
+
+      // Redirect after successful login
+      navigate({
+        to: "/",
+      });
+    } catch (error: any) {
+      console.error("Login failed:", error);
+
+      setError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Invalid email or password."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section className="h-screen overflow-hidden bg-[#F6F1EA]">
@@ -68,7 +114,10 @@ export default function LoginPage() {
                 Sign in to continue your Decorden experience.
               </p>
 
-              <form className="mt-8 space-y-5">
+              <form
+                onSubmit={handleLogin}
+                className="mt-8 space-y-5"
+              >
                 {/* Email */}
                 <div>
                   <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-stone-500">
@@ -77,7 +126,10 @@ export default function LoginPage() {
 
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
+                    autoComplete="email"
                     className="w-full border border-stone-300 bg-white px-5 py-4 outline-none transition focus:border-[var(--brand-deep-forest-green)]"
                   />
                 </div>
@@ -91,7 +143,10 @@ export default function LoginPage() {
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
+                      autoComplete="current-password"
                       className="w-full border border-stone-300 bg-white px-5 py-4 pr-14 outline-none transition focus:border-[var(--brand-deep-forest-green)]"
                     />
 
@@ -108,6 +163,13 @@ export default function LoginPage() {
                     </button>
                   </div>
                 </div>
+
+                {/* Error */}
+                {error && (
+                  <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {error}
+                  </div>
+                )}
 
                 {/* Remember */}
                 <div className="flex items-center justify-between text-sm">
@@ -129,14 +191,18 @@ export default function LoginPage() {
 
                 {/* Button */}
                 <button
-                  className="group flex w-full items-center justify-center gap-3 bg-[var(--brand-deep-forest-green)] py-4 uppercase tracking-[0.25em] text-white transition hover:bg-[var(--brand-green-muted)]"
+                  type="submit"
+                  disabled={loading}
+                  className="group flex w-full items-center justify-center gap-3 bg-[var(--brand-deep-forest-green)] py-4 uppercase tracking-[0.25em] text-white transition hover:bg-[var(--brand-green-muted)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Sign In
+                  {loading ? "Signing In..." : "Sign In"}
 
-                  <ArrowRight
-                    size={18}
-                    className="transition group-hover:translate-x-1"
-                  />
+                  {!loading && (
+                    <ArrowRight
+                      size={18}
+                      className="transition group-hover:translate-x-1"
+                    />
+                  )}
                 </button>
               </form>
 
@@ -152,7 +218,10 @@ export default function LoginPage() {
               </div>
 
               {/* Google */}
-              <button className="w-full border border-stone-300 bg-white py-4 text-sm transition hover:border-[var(--brand-deep-forest-green)] hover:bg-stone-50">
+              <button
+                type="button"
+                className="w-full border border-stone-300 bg-white py-4 text-sm transition hover:border-[var(--brand-deep-forest-green)] hover:bg-stone-50"
+              >
                 Continue with Google
               </button>
 

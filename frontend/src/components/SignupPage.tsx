@@ -1,7 +1,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Eye, EyeOff, ArrowRight, Check } from "lucide-react";
 import { useMemo, useState, useId } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { registerUser } from "@/lib/auth";
 
 const SWATCHES = [
   { name: "Walnut", className: "bg-[#6B4A32]" },
@@ -75,9 +76,83 @@ export default function SignupPage() {
   const [confirm, setConfirm] = useState("");
   const [agreed, setAgreed] = useState(false);
 
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const strength = useMemo(() => passwordStrength(password), [password]);
   const confirmMismatch = confirm.length > 0 && confirm !== password;
 
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    // Basic validation
+    if (!name.trim()) {
+      setError("Please enter your full name.");
+      return;
+    }
+
+    if (!email.trim()) {
+      setError("Please enter your email address.");
+      return;
+    }
+
+    if (!password) {
+      setError("Please enter a password.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
+    if (password !== confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (!agreed) {
+      setError("Please agree to the Terms & Conditions and Privacy Policy.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const data = await registerUser({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      });
+
+      console.log("Registration successful:", data);
+
+      setSuccess("Account created successfully. Redirecting to login...");
+
+      // Redirect to login after successful registration
+      setTimeout(() => {
+        navigate({
+          to: "/login",
+        });
+      }, 1000);
+    } catch (error: any) {
+      console.error("Registration failed:", error);
+
+      setError(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Unable to create your account."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <section className="h-screen overflow-hidden bg-[#F6F1EA]">
       <div className="grid h-full lg:grid-cols-2">
@@ -165,7 +240,7 @@ export default function SignupPage() {
                 home.
               </p>
 
-              <form className="mt-10 space-y-7" onSubmit={(e) => e.preventDefault()}>
+              <form className="mt-10 space-y-7" onSubmit={handleSignup}>
                 <FloatingField label="Full Name" value={name} onChange={setName} />
 
                 <FloatingField
@@ -199,11 +274,10 @@ export default function SignupPage() {
                       {[0, 1, 2, 3].map((i) => (
                         <span
                           key={i}
-                          className={`h-1 flex-1 rounded-full transition-colors ${
-                            i < strength
-                              ? "bg-[var(--brand-deep-forest-green)]"
-                              : "bg-stone-200"
-                          }`}
+                          className={`h-1 flex-1 rounded-full transition-colors ${i < strength
+                            ? "bg-[var(--brand-deep-forest-green)]"
+                            : "bg-stone-200"
+                            }`}
                         />
                       ))}
                     </div>
@@ -271,18 +345,31 @@ export default function SignupPage() {
                     .
                   </span>
                 </label>
+                {error && (
+                  <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {error}
+                  </div>
+                )}
 
+                {success && (
+                  <div className="border border-green-200 bg-green-50 px-4 py-3 text-sm text-[var(--brand-deep-forest-green)]">
+                    {success}
+                  </div>
+                )}
                 {/* Button */}
                 <button
                   type="submit"
-                  disabled={!agreed}
+                  disabled={!agreed || loading}
                   className="group flex w-full items-center justify-center gap-3 bg-[var(--brand-deep-forest-green)] py-4 uppercase tracking-[0.25em] text-white transition hover:bg-[var(--brand-green-muted)] disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Create Account
-                  <ArrowRight
-                    size={18}
-                    className="transition group-hover:translate-x-1"
-                  />
+                  {loading ? "Creating Account..." : "Create Account"}
+
+                  {!loading && (
+                    <ArrowRight
+                      size={18}
+                      className="transition group-hover:translate-x-1"
+                    />
+                  )}
                 </button>
               </form>
 
