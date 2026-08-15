@@ -3,6 +3,7 @@ import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { loginUser } from "@/lib/auth";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ export default function LoginPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,6 +37,8 @@ export default function LoginPage() {
       });
 
       console.log("Login successful:", data);
+
+      setUser(data.user);
 
       // Redirect after successful login
       navigate({

@@ -9,6 +9,8 @@ const connectDB = require("./config/db");
 const cloudinary = require("./config/cloudinary");
 const productRoutes = require("./routes/product.route");
 const userRoutes = require("./routes/user.route");
+const cartRoutes = require("./routes/cart.route");
+const paymentRoutes = require("./routes/payment.route");
 
 
 connectDB();
@@ -30,7 +32,8 @@ app.use(express.json());
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/api/cart", cartRoutes);
+app.use("/api/payment", paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 
