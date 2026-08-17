@@ -105,6 +105,7 @@ const gallery = [
 const insta = [sofa1, gal2, sofa5, gal4, sofa4, gal6, sofa3, gal1];
 
 function Home() {
+
   return (
     <>
       {/* HERO */}

@@ -120,6 +120,7 @@ function RootComponent() {
   const hideLayout = [
     "/login",
     "/signup",
+    "/admin/dashboard",
   ].includes(pathname);
 
   return (
