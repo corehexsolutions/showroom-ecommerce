@@ -16,9 +16,9 @@ import { useAuthStore } from "@/stores/authStore";
 const links = [
   { label: "Home", to: "/" },
   { label: "Sofas", to: "/sofas" },
-  { label: "Furniture", to: "/sofas" },
-  { label: "Curtains", to: "/sofas" },
-  { label: "Clothes", to: "/sofas" },
+  { label: "Furniture", to: "/furnitures" },
+  { label: "Curtains", to: "/curtains" },
+  { label: "Clothes", to: "/clothes" },
   { label: "Collections", to: "/collections" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
@@ -186,7 +186,7 @@ export function Navbar() {
                     <div className="p-2">
                       {user?.role === "admin" && (
                         <Link
-                          to="/admin"
+                          to="/admin/dashboard"
                           onClick={() => setAccountOpen(false)}
                           className="flex items-center px-3 py-2.5 text-sm text-charcoal hover:bg-ivory transition-colors"
                         >

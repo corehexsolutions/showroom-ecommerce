@@ -29,7 +29,7 @@ router.put(
 );
 router.delete("/:id", deleteProduct);
 
-// Soft Delete
+// Product Delete
 router.patch("/:id/archive", softDeleteProduct);
 
 module.exports = router;

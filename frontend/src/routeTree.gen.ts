@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SofasRouteImport } from './routes/sofas'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FurnituresRouteImport } from './routes/furnitures'
+import { Route as CurtainsRouteImport } from './routes/curtains'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
+import { Route as ClothesRouteImport } from './routes/clothes'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -36,6 +39,16 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FurnituresRoute = FurnituresRouteImport.update({
+  id: '/furnitures',
+  path: '/furnitures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CurtainsRoute = CurtainsRouteImport.update({
+  id: '/curtains',
+  path: '/curtains',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -44,6 +57,11 @@ const ContactRoute = ContactRouteImport.update({
 const CollectionsRoute = CollectionsRouteImport.update({
   id: '/collections',
   path: '/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClothesRoute = ClothesRouteImport.update({
+  id: '/clothes',
+  path: '/clothes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -82,8 +100,11 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/clothes': typeof ClothesRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
+  '/curtains': typeof CurtainsRoute
+  '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
@@ -95,8 +116,11 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/clothes': typeof ClothesRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
+  '/curtains': typeof CurtainsRoute
+  '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
@@ -109,8 +133,11 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/clothes': typeof ClothesRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
+  '/curtains': typeof CurtainsRoute
+  '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
@@ -124,8 +151,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/clothes'
     | '/collections'
     | '/contact'
+    | '/curtains'
+    | '/furnitures'
     | '/login'
     | '/signup'
     | '/sofas'
@@ -137,8 +167,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/clothes'
     | '/collections'
     | '/contact'
+    | '/curtains'
+    | '/furnitures'
     | '/login'
     | '/signup'
     | '/sofas'
@@ -150,8 +183,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/clothes'
     | '/collections'
     | '/contact'
+    | '/curtains'
+    | '/furnitures'
     | '/login'
     | '/signup'
     | '/sofas'
@@ -164,8 +200,11 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   CartRoute: typeof CartRoute
+  ClothesRoute: typeof ClothesRoute
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
+  CurtainsRoute: typeof CurtainsRoute
+  FurnituresRoute: typeof FurnituresRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   SofasRoute: typeof SofasRoute
@@ -195,6 +234,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/furnitures': {
+      id: '/furnitures'
+      path: '/furnitures'
+      fullPath: '/furnitures'
+      preLoaderRoute: typeof FurnituresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/curtains': {
+      id: '/curtains'
+      path: '/curtains'
+      fullPath: '/curtains'
+      preLoaderRoute: typeof CurtainsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -207,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/collections'
       fullPath: '/collections'
       preLoaderRoute: typeof CollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clothes': {
+      id: '/clothes'
+      path: '/clothes'
+      fullPath: '/clothes'
+      preLoaderRoute: typeof ClothesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -269,8 +329,11 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   CartRoute: CartRoute,
+  ClothesRoute: ClothesRoute,
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
+  CurtainsRoute: CurtainsRoute,
+  FurnituresRoute: FurnituresRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   SofasRoute: SofasRoute,

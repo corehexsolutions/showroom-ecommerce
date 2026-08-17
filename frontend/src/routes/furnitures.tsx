@@ -4,20 +4,20 @@ import { ProductCard, type Product } from "@/components/ProductCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { getAllProducts } from "@/lib/product";
 
-export const Route = createFileRoute("/sofas")({
+export const Route = createFileRoute("/furnitures")({
   head: () => ({
     meta: [
       {
-        title: "Sofas — Decorden",
+        title: "Furniture — Decorden",
       },
       {
         name: "description",
         content:
-          "Explore our full range of handcrafted luxury sofas — fabric, leather, sectional, curved and wooden frame silhouettes.",
+          "Explore Decorden's collection of luxury furniture crafted for elegant and timeless interiors.",
       },
     ],
   }),
-  component: SofasPage,
+  component: FurniturePage,
 });
 
 type ApiProduct = {
@@ -28,6 +28,7 @@ type ApiProduct = {
   brand?: string;
   category: string;
   tags?: string[];
+
   price: number;
   compareAtPrice?: number;
   currency?: string;
@@ -57,15 +58,25 @@ function mapProduct(product: ApiProduct): Product {
   return {
     id: product._id,
     slug: product.slug,
+
     name: product.name,
 
-    category: product.category,
+    // Example:
+    // tags: ["Wooden", "Dining"]
+    // => "Wooden · Dining"
+    category:
+      product.tags && product.tags.length > 0
+        ? product.tags.join(" · ")
+        : product.category,
 
-    image: product.images?.[0]?.url || "/placeholder-product.jpg",
+    image:
+      product.images?.[0]?.url ||
+      "/placeholder-product.jpg",
 
     price: product.price,
 
-    original: product.compareAtPrice ?? product.price,
+    original:
+      product.compareAtPrice ?? product.price,
 
     rating: product.rating ?? 0,
 
@@ -73,73 +84,94 @@ function mapProduct(product: ApiProduct): Product {
   };
 }
 
-function SofasPage() {
+function FurniturePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchFurniture = async () => {
       try {
         setLoading(true);
         setError("");
 
         const response = await getAllProducts();
 
-        console.log("Products API response:", response);
+        console.log("Furniture API response:", response);
 
-        // Supports either:
-        // { products: [...] }
-        // or
-        // { data: [...] }
-        // or directly [...]
+        /*
+         * Your API may return:
+         *
+         * [...]
+         *
+         * OR
+         *
+         * { products: [...] }
+         *
+         * OR
+         *
+         * { data: [...] }
+         */
+
         const apiProducts: ApiProduct[] = Array.isArray(response)
           ? response
           : response?.products ||
             response?.data ||
             [];
 
-        const mappedProducts = apiProducts
-          .filter((product) => product.isActive !== false)
-          .filter((product) =>
-            product.category?.toLowerCase().includes("sofa")
+        const furnitureProducts = apiProducts
+          .filter(
+            (product) =>
+              product.isActive !== false
+          )
+          .filter(
+            (product) =>
+              product.category?.toLowerCase() ===
+              "furniture"
           )
           .map(mapProduct);
 
-        setProducts(mappedProducts);
+        setProducts(furnitureProducts);
       } catch (err) {
-        console.error("Failed to fetch sofas:", err);
+        console.error(
+          "Failed to fetch furniture:",
+          err
+        );
 
         setError(
           err instanceof Error
             ? err.message
-            : "Failed to load sofas."
+            : "Failed to load furniture."
         );
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchFurniture();
   }, []);
 
   return (
     <section className="py-20 md:py-28">
       <div className="container-luxury">
+
         <SectionHeader
-          eyebrow="All Sofas"
-          title="The full |atelier| collection."
-          subtitle="Every silhouette we currently make, built to order in our Mumbai workshop."
+          eyebrow="Furniture"
+          title="Furniture for |refined| living."
+          subtitle="Discover timeless furniture pieces designed to bring warmth, character and elegance to your home."
         />
 
         {/* Loading */}
         {loading && (
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
             {[1, 2, 3, 4, 5, 6].map((item) => (
-              <div key={item} className="animate-pulse">
+              <div
+                key={item}
+                className="animate-pulse"
+              >
                 <div className="aspect-[4/3] bg-gray-200" />
 
-                <div className="mt-5 h-3 w-24 bg-gray-200 rounded" />
+                <div className="mt-5 h-3 w-28 bg-gray-200 rounded" />
 
                 <div className="mt-3 h-5 w-48 bg-gray-200 rounded" />
 
@@ -152,31 +184,37 @@ function SofasPage() {
         {/* Error */}
         {!loading && error && (
           <div className="mt-16 text-center">
-            <p className="text-red-500">{error}</p>
-          </div>
-        )}
-
-        {/* No products */}
-        {!loading && !error && products.length === 0 && (
-          <div className="mt-16 text-center">
-            <p className="text-gray-500">
-              No sofas are currently available.
+            <p className="text-red-500">
+              {error}
             </p>
           </div>
         )}
 
+        {/* Empty */}
+        {!loading &&
+          !error &&
+          products.length === 0 && (
+            <div className="mt-16 text-center">
+              <p className="text-gray-500">
+                No furniture is currently available.
+              </p>
+            </div>
+          )}
+
         {/* Products */}
-        {!loading && !error && products.length > 0 && (
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
-            {products.map((product, index) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                index={index}
-              />
-            ))}
-          </div>
-        )}
+        {!loading &&
+          !error &&
+          products.length > 0 && (
+            <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+              {products.map((product, index) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  index={index}
+                />
+              ))}
+            </div>
+          )}
       </div>
     </section>
   );
