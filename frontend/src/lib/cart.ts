@@ -10,47 +10,40 @@ export async function getCart() {
 export async function addToCart(
   productId: string,
   quantity = 1,
-  variantId?: string
+  variant?: string | null
 ) {
-  const response = await api.post("/cart", {
+  const response = await api.post("/cart/items", {
     productId,
     quantity,
-    variantId,
+    variant: variant ?? null,
   });
 
   return response.data;
 }
 
 export async function updateCartItem(
-  productId: string,
-  quantity: number,
-  variantId?: string
+  itemId: string,
+  quantity: number
 ) {
-  const response = await api.patch("/cart/item", {
-    productId,
-    quantity,
-    variantId,
-  });
+  const response = await api.patch(
+    `/cart/items/${itemId}`,
+    {
+      quantity,
+    }
+  );
 
   return response.data;
 }
 
-export async function removeCartItem(
-  productId: string,
-  variantId?: string
-) {
-  const response = await api.delete("/cart/item", {
-    data: {
-      productId,
-      variantId,
-    },
-  });
+export async function removeCartItem(itemId: string) {
+  const response = await api.delete(
+    `/cart/items/${itemId}`
+  );
 
   return response.data;
 }
 
 export async function clearCart() {
   const response = await api.delete("/cart");
-
   return response.data;
 }

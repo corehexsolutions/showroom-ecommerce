@@ -213,7 +213,9 @@ export function Navbar() {
               ariaLabel="Cart"
               badge={2}
             >
+              <Link to="/cart"> 
               <ShoppingBag className="h-[18px] w-[18px]" />
+              </Link>
             </IconBtn>
 
             {/* Mobile Menu */}

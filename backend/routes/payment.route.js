@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   createRazorpayOrder,
   verifyRazorpayPayment,
+  createBuyNowOrder
 } = require("../controllers/payment.controller");
 
 const protect  = require("../middlewares/authMiddleware");
@@ -11,9 +12,15 @@ const protect  = require("../middlewares/authMiddleware");
 
 
 router.post(
-  "/razorpay/order",
+  "/razorpay/create-order",
   protect,
   createRazorpayOrder
+);
+
+router.post(
+  "/razorpay/buy-now",
+  protect,
+  createBuyNowOrder
 );
 
 router.post(

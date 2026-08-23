@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SofasRouteImport } from './routes/sofas'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FurnituresRouteImport } from './routes/furnitures'
 import { Route as CurtainsRouteImport } from './routes/curtains'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as ClothesRouteImport } from './routes/clothes'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -32,6 +34,11 @@ const SofasRoute = SofasRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderSuccessRoute = OrderSuccessRouteImport.update({
+  id: '/order-success',
+  path: '/order-success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -62,6 +69,11 @@ const CollectionsRoute = CollectionsRouteImport.update({
 const ClothesRoute = ClothesRouteImport.update({
   id: '/clothes',
   path: '/clothes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -100,12 +112,14 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/clothes': typeof ClothesRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
+  '/order-success': typeof OrderSuccessRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -116,12 +130,14 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/clothes': typeof ClothesRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
+  '/order-success': typeof OrderSuccessRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -133,12 +149,14 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/clothes': typeof ClothesRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
+  '/order-success': typeof OrderSuccessRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -151,12 +169,14 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/checkout'
     | '/clothes'
     | '/collections'
     | '/contact'
     | '/curtains'
     | '/furnitures'
     | '/login'
+    | '/order-success'
     | '/signup'
     | '/sofas'
     | '/admin/dashboard'
@@ -167,12 +187,14 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/checkout'
     | '/clothes'
     | '/collections'
     | '/contact'
     | '/curtains'
     | '/furnitures'
     | '/login'
+    | '/order-success'
     | '/signup'
     | '/sofas'
     | '/admin/dashboard'
@@ -183,12 +205,14 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/checkout'
     | '/clothes'
     | '/collections'
     | '/contact'
     | '/curtains'
     | '/furnitures'
     | '/login'
+    | '/order-success'
     | '/signup'
     | '/sofas'
     | '/admin/dashboard'
@@ -200,12 +224,14 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
   ClothesRoute: typeof ClothesRoute
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
   CurtainsRoute: typeof CurtainsRoute
   FurnituresRoute: typeof FurnituresRoute
   LoginRoute: typeof LoginRoute
+  OrderSuccessRoute: typeof OrderSuccessRoute
   SignupRoute: typeof SignupRoute
   SofasRoute: typeof SofasRoute
   ProductIdIndexRoute: typeof ProductIdIndexRoute
@@ -225,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order-success': {
+      id: '/order-success'
+      path: '/order-success'
+      fullPath: '/order-success'
+      preLoaderRoute: typeof OrderSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -267,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/clothes'
       fullPath: '/clothes'
       preLoaderRoute: typeof ClothesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -329,12 +369,14 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
   ClothesRoute: ClothesRoute,
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
   CurtainsRoute: CurtainsRoute,
   FurnituresRoute: FurnituresRoute,
   LoginRoute: LoginRoute,
+  OrderSuccessRoute: OrderSuccessRoute,
   SignupRoute: SignupRoute,
   SofasRoute: SofasRoute,
   ProductIdIndexRoute: ProductIdIndexRoute,

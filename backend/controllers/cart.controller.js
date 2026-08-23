@@ -5,7 +5,7 @@ const Product = require("../models/product.model");
 const getCart = async (req, res) => {
   try {
     let cart = await Cart.findOne({
-      user: req.user._id,
+      user: req.user.userId,
     }).populate({
       path: "items.product",
       select: "name slug price images stock variants",
@@ -13,7 +13,7 @@ const getCart = async (req, res) => {
 
     if (!cart) {
       cart = await Cart.create({
-        user: req.user._id,
+        user: req.user.userId,
         items: [],
       });
     }
@@ -62,11 +62,11 @@ const addToCart = async (req, res) => {
 
     const cart = await Cart.findOneAndUpdate(
       {
-        user: req.user._id,
+        user: req.user.userId,
       },
       {
         $setOnInsert: {
-          user: req.user._id,
+          user: req.user.userId,
         },
       },
       {
@@ -127,7 +127,7 @@ const updateCartItem = async (req, res) => {
     }
 
     const cart = await Cart.findOne({
-      user: req.user._id,
+      user: req.user.userId,
     });
 
     if (!cart) {
@@ -176,7 +176,7 @@ const removeCartItem = async (req, res) => {
     const { itemId } = req.params;
 
     const cart = await Cart.findOne({
-      user: req.user._id,
+      user: req.user.userId,
     });
 
     if (!cart) {
@@ -224,7 +224,7 @@ const clearCart = async (req, res) => {
   try {
     await Cart.findOneAndUpdate(
       {
-        user: req.user._id,
+        user: req.user.userId,
       },
       {
         $set: {

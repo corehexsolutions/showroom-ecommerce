@@ -7,7 +7,7 @@ const razorpay = require("../config/razorpay");
 const createRazorpayOrder = async (req, res) => {
   try {
     const cart = await Cart.findOne({
-      user: req.user._id,
+      user: req.user.userId,
     }).populate("items.product");
 
     if (!cart || cart.items.length === 0) {
@@ -71,7 +71,7 @@ const createRazorpayOrder = async (req, res) => {
       receipt: `receipt_${Date.now()}`,
 
       notes: {
-        userId: req.user._id.toString(),
+        userId: req.user.userId.toString(),
       },
     });
 
@@ -80,7 +80,7 @@ const createRazorpayOrder = async (req, res) => {
     const order = await Order.create({
       orderNumber,
 
-      user: req.user._id,
+      user: req.user.userId,
 
       items: orderItems,
 
@@ -132,7 +132,7 @@ const createRazorpayOrder = async (req, res) => {
       message: "Failed to create payment order",
     });
   }
-  
+
 };
 
 const verifyRazorpayPayment = async (req, res) => {
@@ -143,6 +143,7 @@ const verifyRazorpayPayment = async (req, res) => {
       razorpay_signature,
     } = req.body;
 
+    
     if (
       !razorpay_order_id ||
       !razorpay_payment_id ||
@@ -179,7 +180,7 @@ const verifyRazorpayPayment = async (req, res) => {
 
     const order = await Order.findOne({
       razorpayOrderId: razorpay_order_id,
-      user: req.user._id,
+      user: req.user.userId,
     });
 
     if (!order) {
@@ -213,7 +214,7 @@ const verifyRazorpayPayment = async (req, res) => {
     // Clear cart ONLY after successful verification
     await Cart.findOneAndUpdate(
       {
-        user: req.user._id,
+        user: req.user.userId,
       },
       {
         $set: {
@@ -240,7 +241,146 @@ const verifyRazorpayPayment = async (req, res) => {
   }
 };
 
+const createBuyNowOrder = async (req, res) => {
+  try {
+    const {
+      productId,
+      quantity = 1,
+      variant = null,
+    } = req.body;
+
+    if (!productId) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID is required",
+      });
+    }
+
+    if (quantity < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Quantity must be at least 1",
+      });
+    }
+
+    const Product = require("../models/product.model");
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Check stock
+    if (
+      product.stock !== undefined &&
+      product.stock < quantity
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: `${product.name} does not have enough stock`,
+      });
+    }
+
+    const price = product.price;
+
+    const subtotal = price * quantity;
+
+    const shipping = subtotal >= 75000 ? 0 : 0;
+
+    const total = subtotal + shipping;
+
+    const amountInPaise = Math.round(total * 100);
+
+    const razorpayOrder =
+      await razorpay.orders.create({
+        amount: amountInPaise,
+        currency: "INR",
+        receipt: `buy_now_${Date.now()}`,
+        notes: {
+          userId: req.user.userId.toString(),
+          productId: product._id.toString(),
+          type: "buy_now",
+        },
+      });
+
+    const orderNumber = `DD-${Date.now()}`;
+
+    const order = await Order.create({
+      orderNumber,
+
+      user: req.user.userId,
+
+      items: [
+        {
+          product: product._id,
+          name: product.name,
+          image: product.images?.[0] || null,
+          price: product.price,
+          quantity,
+          variant,
+        },
+      ],
+
+      subtotal,
+
+      shipping,
+
+      total,
+
+      currency: "INR",
+
+      paymentMethod: "razorpay",
+
+      paymentStatus: "pending",
+
+      orderStatus: "pending",
+
+      razorpayOrderId: razorpayOrder.id,
+
+      shippingAddress: {
+        name: req.user.name,
+        email: req.user.email,
+        phone: req.user.phone,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+
+      order: {
+        id: order._id,
+        orderNumber: order.orderNumber,
+        subtotal: order.subtotal,
+        shipping: order.shipping,
+        total: order.total,
+        currency: order.currency,
+      },
+
+      razorpay: {
+        orderId: razorpayOrder.id,
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+      },
+    });
+  } catch (error) {
+    console.error(
+      "Buy now order error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create Buy Now order",
+    });
+  }
+};
+
 module.exports = {
   createRazorpayOrder,
   verifyRazorpayPayment,
+  createBuyNowOrder
 };
