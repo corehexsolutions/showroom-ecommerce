@@ -194,6 +194,24 @@ export function Navbar() {
                         </Link>
                       )}
 
+                      <div className=''>
+                        <Link
+                          to="/cart"
+                          className="flex items-center px-3 py-2.5 text-sm text-charcoal hover:bg-ivory transition-colors"
+                        >
+                          Cart
+                        </Link>
+                      </div>
+
+                      <div className=''>
+                        <Link
+                          to="/orders"
+                          className="flex items-center px-3 py-2.5 text-sm text-charcoal hover:bg-ivory transition-colors"
+                        >
+                          Orders
+                        </Link>
+                      </div>
+
                       <button
                         type="button"
                         onClick={handleLogout}
@@ -213,8 +231,8 @@ export function Navbar() {
               ariaLabel="Cart"
               badge={2}
             >
-              <Link to="/cart"> 
-              <ShoppingBag className="h-[18px] w-[18px]" />
+              <Link to="/cart">
+                <ShoppingBag className="h-[18px] w-[18px]" />
               </Link>
             </IconBtn>
 
