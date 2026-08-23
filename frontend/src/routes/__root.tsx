@@ -122,6 +122,9 @@ function RootComponent() {
     "/login",
     "/signup",
     "/admin/dashboard",
+    "/admin/customers",
+    "/admin/settings",  
+    "/admin/orders",
   ].includes(pathname);
 
   return (

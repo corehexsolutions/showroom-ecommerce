@@ -209,27 +209,32 @@ export default function AdminPage() {
               <AdminNavItem
                 icon={<LayoutDashboard size={18} />}
                 label="Dashboard"
+                to="/admin/dashboard"
                 active
               />
 
               <AdminNavItem
                 icon={<Package size={18} />}
                 label="Sofas"
+                to="/admin/sofas"
               />
 
               <AdminNavItem
                 icon={<ShoppingBag size={18} />}
                 label="Orders"
+                to="/admin/orders"
               />
 
               <AdminNavItem
                 icon={<Users size={18} />}
                 label="Customers"
+                to="/admin/customers"
               />
 
               <AdminNavItem
                 icon={<Settings size={18} />}
                 label="Settings"
+                to="/admin/settings"
               />
             </nav>
 
@@ -362,9 +367,9 @@ export default function AdminPage() {
                       onChange={(e) =>
                         setStatus(
                           e.target.value as
-                            | "all"
-                            | "active"
-                            | "archived"
+                          | "all"
+                          | "active"
+                          | "archived"
                         )
                       }
                       className="h-11 rounded-full border border-black/10 bg-[#F8F7F4] px-4 text-sm outline-none focus:border-[#9CAF88]"
@@ -474,23 +479,25 @@ export default function AdminPage() {
 function AdminNavItem({
   icon,
   label,
+  to,
   active = false,
 }: {
   icon: React.ReactNode;
   label: string;
+  to: string;
   active?: boolean;
 }) {
   return (
-    <button
-      className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm transition ${
-        active
-          ? "bg-white text-[#20251F]"
-          : "text-white/55 hover:bg-white/5 hover:text-white"
-      }`}
+    <Link
+      to={to}
+      className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm transition ${active
+        ? "bg-white text-[#20251F]"
+        : "text-white/55 hover:bg-white/5 hover:text-white"
+        }`}
     >
       {icon}
       {label}
-    </button>
+    </Link>
   );
 }
 
@@ -587,13 +594,12 @@ function ProductRow({
 
       <td className="px-6 py-4">
         <div
-          className={`text-sm font-medium ${
-            product.totalStock <= 0
-              ? "text-red-600"
-              : product.totalStock <= 5
-                ? "text-amber-600"
-                : "text-black/70"
-          }`}
+          className={`text-sm font-medium ${product.totalStock <= 0
+            ? "text-red-600"
+            : product.totalStock <= 5
+              ? "text-amber-600"
+              : "text-black/70"
+            }`}
         >
           {product.totalStock}
         </div>
@@ -605,11 +611,10 @@ function ProductRow({
 
       <td className="px-6 py-4">
         <span
-          className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wider ${
-            product.isActive
-              ? "bg-[#E7EEE1] text-[#536348]"
-              : "bg-black/5 text-black/40"
-          }`}
+          className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wider ${product.isActive
+            ? "bg-[#E7EEE1] text-[#536348]"
+            : "bg-black/5 text-black/40"
+            }`}
         >
           {product.isActive ? "Active" : "Archived"}
         </span>
