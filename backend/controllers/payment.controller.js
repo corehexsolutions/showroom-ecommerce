@@ -6,6 +6,37 @@ const razorpay = require("../config/razorpay");
 
 const createRazorpayOrder = async (req, res) => {
   try {
+
+    const {
+      shippingAddress,
+    } = req.body;
+
+    if (!shippingAddress) {
+      return res.status(400).json({
+        success: false,
+        message: "Shipping address is required",
+      });
+    }
+
+    const requiredFields = [
+      "name",
+      "phone",
+      "email",
+      "addressLine1",
+      "city",
+      "state",
+      "postalCode",
+    ];
+
+    for (const field of requiredFields) {
+      if (!shippingAddress[field]) {
+        return res.status(400).json({
+          success: false,
+          message: `${field} is required`,
+        });
+      }
+    }
+
     const cart = await Cart.findOne({
       user: req.user.userId,
     }).populate("items.product");
@@ -101,8 +132,15 @@ const createRazorpayOrder = async (req, res) => {
       razorpayOrderId: razorpayOrder.id,
 
       shippingAddress: {
-        name: req.user.name,
-        email: req.user.email,
+        name: shippingAddress.name,
+        phone: shippingAddress.phone,
+        email: shippingAddress.email,
+        addressLine1: shippingAddress.addressLine1,
+        addressLine2: shippingAddress.addressLine2 || "",
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        postalCode: shippingAddress.postalCode,
+        country: shippingAddress.country || "India",
       },
     });
 
@@ -143,7 +181,7 @@ const verifyRazorpayPayment = async (req, res) => {
       razorpay_signature,
     } = req.body;
 
-    
+
     if (
       !razorpay_order_id ||
       !razorpay_payment_id ||
@@ -247,7 +285,35 @@ const createBuyNowOrder = async (req, res) => {
       productId,
       quantity = 1,
       variant = null,
+      shippingAddress
     } = req.body;
+
+
+    if (!shippingAddress) {
+      return res.status(400).json({
+        success: false,
+        message: "Shipping address is required",
+      });
+    }
+
+    const requiredFields = [
+      "name",
+      "phone",
+      "email",
+      "addressLine1",
+      "city",
+      "state",
+      "postalCode",
+    ];
+
+    for (const field of requiredFields) {
+      if (!shippingAddress[field]) {
+        return res.status(400).json({
+          success: false,
+          message: `${field} is required`,
+        });
+      }
+    }
 
     if (!productId) {
       return res.status(400).json({
@@ -342,9 +408,15 @@ const createBuyNowOrder = async (req, res) => {
       razorpayOrderId: razorpayOrder.id,
 
       shippingAddress: {
-        name: req.user.name,
-        email: req.user.email,
-        phone: req.user.phone,
+        name: shippingAddress.name,
+        phone: shippingAddress.phone,
+        email: shippingAddress.email,
+        addressLine1: shippingAddress.addressLine1,
+        addressLine2: shippingAddress.addressLine2 || "",
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        postalCode: shippingAddress.postalCode,
+        country: shippingAddress.country || "India",
       },
     });
 

@@ -20,9 +20,11 @@ import {
 } from "@/lib/cart";
 
 import {
-  createCartPaymentOrder,
-  verifyPayment,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
 } from "@/lib/payment";
+import { CheckoutModal } from "@/components/checkout/CheckoutModal";
+import type { ShippingAddress } from "@/components/checkout/ShippingForm";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -50,9 +52,9 @@ type Product = {
   images?: Array<
     | string
     | {
-        url: string;
-        public_id?: string;
-      }
+      url: string;
+      public_id?: string;
+    }
   >;
 
   stock?: number;
@@ -93,6 +95,9 @@ function CartPage() {
   const [paymentSuccess, setPaymentSuccess] =
     useState(false);
 
+  const [checkoutOpen, setCheckoutOpen] =
+    useState(false);
+
   // ------------------------------------
   // LOAD CART
   // ------------------------------------
@@ -131,7 +136,7 @@ function CartPage() {
       (total, item) =>
         total +
         Number(item.product.price) *
-          item.quantity,
+        item.quantity,
       0
     );
   }, [items]);
@@ -139,6 +144,8 @@ function CartPage() {
   const shipping = 0;
 
   const total = subtotal + shipping;
+
+
 
   // ------------------------------------
   // FORMAT PRICE
@@ -257,21 +264,17 @@ function CartPage() {
   // RAZORPAY PAYMENT
   // ------------------------------------
 
-  const handlePayment = async () => {
-    if (items.length === 0) {
-      return;
-    }
-
+  const handleCheckout = async (
+    shippingAddress: ShippingAddress
+  ) => {
     try {
       setPaying(true);
       setPaymentError(null);
 
-      // ----------------------------------
-      // CREATE BACKEND ORDER
-      // ----------------------------------
-
       const data =
-        await createCartPaymentOrder();
+        await createRazorpayOrder(
+          shippingAddress
+        );
 
       if (!data.success) {
         throw new Error(
@@ -280,8 +283,7 @@ function CartPage() {
       }
 
       const razorpayKey =
-        import.meta.env
-          .VITE_RAZORPAY_KEY_ID;
+        import.meta.env.VITE_RAZORPAY_KEY_ID;
 
       if (!razorpayKey) {
         throw new Error(
@@ -295,49 +297,34 @@ function CartPage() {
         );
       }
 
-      // ----------------------------------
-      // OPEN RAZORPAY
-      // ----------------------------------
-
       const options = {
         key: razorpayKey,
 
-        amount:
-          data.razorpay.amount,
+        amount: data.razorpay.amount,
 
-        currency:
-          data.razorpay.currency,
+        currency: data.razorpay.currency,
 
         name: "Decor Den",
 
         description:
           `Order ${data.order.orderNumber}`,
 
-        order_id:
-          data.razorpay.orderId,
+        order_id: data.razorpay.orderId,
 
         theme: {
-          color:
-            "#183C2D",
+          color: "#183C2D",
         },
 
-        handler: async (
-          response: {
-            razorpay_order_id: string;
-            razorpay_payment_id: string;
-            razorpay_signature: string;
-          }
-        ) => {
+        handler: async (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) => {
           try {
             setPaying(true);
-            setPaymentError(null);
-
-            // ------------------------------
-            // VERIFY PAYMENT ON BACKEND
-            // ------------------------------
 
             const verifyResponse =
-              await verifyPayment({
+              await verifyRazorpayPayment({
                 razorpay_order_id:
                   response.razorpay_order_id,
 
@@ -351,16 +338,12 @@ function CartPage() {
             if (!verifyResponse.success) {
               throw new Error(
                 verifyResponse.message ||
-                  "Payment verification failed"
+                "Payment verification failed"
               );
             }
 
-            // ------------------------------
-            // SUCCESS
-            // ------------------------------
-
+            setCheckoutOpen(false);
             setPaymentSuccess(true);
-
             setItems([]);
           } catch (error) {
             console.error(
@@ -386,9 +369,7 @@ function CartPage() {
       };
 
       const razorpay =
-        new window.Razorpay(
-          options
-        );
+        new window.Razorpay(options);
 
       razorpay.open();
     } catch (error) {
@@ -407,6 +388,18 @@ function CartPage() {
     }
   };
 
+  const checkoutItems = items.map(
+    (item) => ({
+      id: item.product._id,
+      name: item.product.name,
+      image: getProductImage(
+        item.product
+      ),
+      price: Number(item.product.price),
+      quantity: item.quantity,
+      variant: item.variant,
+    })
+  );
   // ------------------------------------
   // CLEAR CART
   // ------------------------------------
@@ -657,7 +650,7 @@ function CartPage() {
                           className="shrink-0 text-charcoal/40 transition-colors hover:text-red-700 disabled:opacity-50"
                         >
                           {removingItem ===
-                          item._id ? (
+                            item._id ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
                             <Trash2 className="h-4 w-4" />
@@ -693,7 +686,7 @@ function CartPage() {
 
                         <span className="flex h-9 w-10 items-center justify-center border-x border-line text-xs">
                           {updatingItem ===
-                          item._id ? (
+                            item._id ? (
                             <Loader2 className="h-3 w-3 animate-spin" />
                           ) : (
                             item.quantity
@@ -708,7 +701,7 @@ function CartPage() {
                             (item.product.stock !==
                               undefined &&
                               item.quantity >=
-                                item.product.stock)
+                              item.product.stock)
                           }
                           onClick={() =>
                             changeQuantity(
@@ -729,7 +722,7 @@ function CartPage() {
                       <p className="font-display text-lg text-charcoal">
                         {formatPrice(
                           item.product.price *
-                            item.quantity
+                          item.quantity
                         )}
                       </p>
                     </div>
@@ -798,21 +791,14 @@ function CartPage() {
 
               <button
                 type="button"
-                disabled={paying || items.length === 0}
-                onClick={handlePayment}
+                disabled={
+                  paying || items.length === 0
+                }
+                onClick={() => setCheckoutOpen(true)}
                 className="mt-8 flex w-full items-center justify-center gap-3 bg-charcoal px-6 py-4 text-[11px] uppercase tracking-[0.22em] text-ivory transition-colors hover:bg-[var(--brand-green-muted)] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {paying ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    Pay {formatPrice(total)}
-                    <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
+                Pay {formatPrice(total)}
+                <ArrowRight className="h-4 w-4" />
               </button>
 
               <Link
@@ -836,6 +822,21 @@ function CartPage() {
 
         </div>
       </div>
+
+      <CheckoutModal
+        open={checkoutOpen}
+        onClose={() => {
+          if (!paying) {
+            setCheckoutOpen(false);
+          }
+        }}
+        items={checkoutItems}
+        subtotal={subtotal}
+        shipping={shipping}
+        total={total}
+        onSubmit={handleCheckout}
+        loading={paying}
+      />
     </section>
   );
 }

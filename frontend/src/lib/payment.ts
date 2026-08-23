@@ -33,10 +33,27 @@ export type VerifyPaymentResponse = {
   };
 };
 
-export async function createRazorpayOrder() {
+export type ShippingAddress = {
+  name: string;
+  phone: string;
+  email: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country?: string;
+};
+
+export async function createRazorpayOrder(
+  shippingAddress: ShippingAddress
+) {
   const response =
     await api.post<RazorpayOrderResponse>(
-      "/payments/razorpay/create-order"
+      "/payments/razorpay/create-order",
+      {
+        shippingAddress,
+      }
     );
 
   return response.data;
@@ -46,6 +63,7 @@ export async function createBuyNowOrder(data: {
   productId: string;
   quantity: number;
   variant?: string | null;
+  shippingAddress: ShippingAddress;
 }) {
   const response =
     await api.post<RazorpayOrderResponse>(
