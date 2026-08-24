@@ -4,7 +4,6 @@ import { ArrowRight, Loader2 } from "lucide-react";
 
 import { useCartStore } from "@/stores/cartStore";
 import {
-  createPaymentOrder,
   verifyPayment,
 } from "@/lib/payment";
 
