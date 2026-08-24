@@ -83,11 +83,11 @@ function Gallery({ images, name }: { images: string[]; name: string }) {
   }
   return (
     <div className="flex flex-col gap-3">
-      <div className="w-full overflow-hidden bg-stone-100">
+      <div className="aspect-[4/3] w-full overflow-hidden bg-stone-100">
         <img
           src={images[active].url}
           alt={name}
-          className="w-full object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
       {images.length > 1 && (
@@ -96,9 +96,8 @@ function Gallery({ images, name }: { images: string[]; name: string }) {
             <button
               key={img + i}
               onClick={() => setActive(i)}
-              className={`h-16 w-16 shrink-0 overflow-hidden rounded-sm border ${
-                i === active ? "border-stone-900" : "border-transparent"
-              }`}
+              className={`h-16 w-16 shrink-0 overflow-hidden rounded-sm border ${i === active ? "border-stone-900" : "border-transparent"
+                }`}
             >
               <img src={img.url} alt={`${name} thumbnail ${i + 1}`} className="h-full w-full object-cover" />
             </button>
@@ -132,13 +131,12 @@ function VariantSelector({
               key={v.id}
               disabled={disabled}
               onClick={() => onSelect(v.id)}
-              className={`w-full rounded-sm border py-2.5 text-[13px] font-medium tracking-wide transition-colors ${
-                disabled
+              className={`w-full rounded-sm border py-2.5 text-[13px] font-medium tracking-wide transition-colors ${disabled
                   ? "cursor-not-allowed border-stone-200 bg-stone-50 text-stone-300"
                   : active
-                  ? "border-[#241a14] bg-[#241a14] text-white"
-                  : "border-stone-300 bg-white text-stone-700 hover:border-stone-500"
-              }`}
+                    ? "border-[#241a14] bg-[#241a14] text-white"
+                    : "border-stone-300 bg-white text-stone-700 hover:border-stone-500"
+                }`}
             >
               {v.label}
               {disabled ? " (out of stock)" : ""}
