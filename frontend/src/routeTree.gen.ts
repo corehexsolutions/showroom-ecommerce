@@ -14,6 +14,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FurnituresRouteImport } from './routes/furnitures'
+import { Route as CustomizeRouteImport } from './routes/customize'
 import { Route as CurtainsRouteImport } from './routes/curtains'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
@@ -53,6 +54,11 @@ const LoginRoute = LoginRouteImport.update({
 const FurnituresRoute = FurnituresRouteImport.update({
   id: '/furnitures',
   path: '/furnitures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomizeRoute = CustomizeRouteImport.update({
+  id: '/customize',
+  path: '/customize',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CurtainsRoute = CurtainsRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
+  '/customize': typeof CustomizeRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
+  '/customize': typeof CustomizeRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
+  '/customize': typeof CustomizeRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/contact'
     | '/curtains'
+    | '/customize'
     | '/furnitures'
     | '/login'
     | '/order-success'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/contact'
     | '/curtains'
+    | '/customize'
     | '/furnitures'
     | '/login'
     | '/order-success'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/contact'
     | '/curtains'
+    | '/customize'
     | '/furnitures'
     | '/login'
     | '/order-success'
@@ -277,6 +289,7 @@ export interface RootRouteChildren {
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
   CurtainsRoute: typeof CurtainsRoute
+  CustomizeRoute: typeof CustomizeRoute
   FurnituresRoute: typeof FurnituresRoute
   LoginRoute: typeof LoginRoute
   OrderSuccessRoute: typeof OrderSuccessRoute
@@ -322,6 +335,13 @@ declare module '@tanstack/react-router' {
       path: '/furnitures'
       fullPath: '/furnitures'
       preLoaderRoute: typeof FurnituresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customize': {
+      id: '/customize'
+      path: '/customize'
+      fullPath: '/customize'
+      preLoaderRoute: typeof CustomizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/curtains': {
@@ -456,6 +476,7 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
   CurtainsRoute: CurtainsRoute,
+  CustomizeRoute: CustomizeRoute,
   FurnituresRoute: FurnituresRoute,
   LoginRoute: LoginRoute,
   OrderSuccessRoute: OrderSuccessRoute,
