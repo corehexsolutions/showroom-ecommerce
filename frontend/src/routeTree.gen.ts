@@ -9,11 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as SofasRouteImport } from './routes/sofas'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ShippingChar38DeliveryRouteImport } from './routes/shipping-&-delivery'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FurnituresRouteImport } from './routes/furnitures'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as CustomizeRouteImport } from './routes/customize'
 import { Route as CurtainsRouteImport } from './routes/curtains'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -21,6 +24,7 @@ import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as ClothesRouteImport } from './routes/clothes'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as CareGuideRouteImport } from './routes/care-guide'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -31,6 +35,11 @@ import { Route as ProductIdIndexRouteImport } from './routes/product/$id/index'
 import { Route as AdminOrdersIndexRouteImport } from './routes/admin/orders/index'
 import { Route as AdminOrdersOrderIdRouteImport } from './routes/admin/orders/$orderId'
 
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SofasRoute = SofasRouteImport.update({
   id: '/sofas',
   path: '/sofas',
@@ -39,6 +48,11 @@ const SofasRoute = SofasRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShippingChar38DeliveryRoute = ShippingChar38DeliveryRouteImport.update({
+  id: '/shipping-&-delivery',
+  path: '/shipping-&-delivery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrderSuccessRoute = OrderSuccessRouteImport.update({
@@ -54,6 +68,11 @@ const LoginRoute = LoginRouteImport.update({
 const FurnituresRoute = FurnituresRouteImport.update({
   id: '/furnitures',
   path: '/furnitures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CustomizeRoute = CustomizeRouteImport.update({
@@ -89,6 +108,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareGuideRoute = CareGuideRouteImport.update({
+  id: '/care-guide',
+  path: '/care-guide',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -141,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/care-guide': typeof CareGuideRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/clothes': typeof ClothesRoute
@@ -148,11 +173,14 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
   '/customize': typeof CustomizeRoute
+  '/faq': typeof FaqRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
+  '/shipping-&-delivery': typeof ShippingChar38DeliveryRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
+  '/wishlist': typeof WishlistRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/orders/': typeof OrdersIndexRoute
@@ -164,6 +192,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/care-guide': typeof CareGuideRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/clothes': typeof ClothesRoute
@@ -171,11 +200,14 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
   '/customize': typeof CustomizeRoute
+  '/faq': typeof FaqRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
+  '/shipping-&-delivery': typeof ShippingChar38DeliveryRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
+  '/wishlist': typeof WishlistRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/orders': typeof OrdersIndexRoute
@@ -188,6 +220,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/care-guide': typeof CareGuideRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/clothes': typeof ClothesRoute
@@ -195,11 +228,14 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/curtains': typeof CurtainsRoute
   '/customize': typeof CustomizeRoute
+  '/faq': typeof FaqRoute
   '/furnitures': typeof FurnituresRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
+  '/shipping-&-delivery': typeof ShippingChar38DeliveryRoute
   '/signup': typeof SignupRoute
   '/sofas': typeof SofasRoute
+  '/wishlist': typeof WishlistRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/orders/': typeof OrdersIndexRoute
@@ -213,6 +249,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/care-guide'
     | '/cart'
     | '/checkout'
     | '/clothes'
@@ -220,11 +257,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/curtains'
     | '/customize'
+    | '/faq'
     | '/furnitures'
     | '/login'
     | '/order-success'
+    | '/shipping-&-delivery'
     | '/signup'
     | '/sofas'
+    | '/wishlist'
     | '/admin/dashboard'
     | '/orders/$orderId'
     | '/orders/'
@@ -236,6 +276,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/care-guide'
     | '/cart'
     | '/checkout'
     | '/clothes'
@@ -243,11 +284,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/curtains'
     | '/customize'
+    | '/faq'
     | '/furnitures'
     | '/login'
     | '/order-success'
+    | '/shipping-&-delivery'
     | '/signup'
     | '/sofas'
+    | '/wishlist'
     | '/admin/dashboard'
     | '/orders/$orderId'
     | '/orders'
@@ -259,6 +303,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/care-guide'
     | '/cart'
     | '/checkout'
     | '/clothes'
@@ -266,11 +311,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/curtains'
     | '/customize'
+    | '/faq'
     | '/furnitures'
     | '/login'
     | '/order-success'
+    | '/shipping-&-delivery'
     | '/signup'
     | '/sofas'
+    | '/wishlist'
     | '/admin/dashboard'
     | '/orders/$orderId'
     | '/orders/'
@@ -283,6 +331,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CareGuideRoute: typeof CareGuideRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ClothesRoute: typeof ClothesRoute
@@ -290,11 +339,14 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CurtainsRoute: typeof CurtainsRoute
   CustomizeRoute: typeof CustomizeRoute
+  FaqRoute: typeof FaqRoute
   FurnituresRoute: typeof FurnituresRoute
   LoginRoute: typeof LoginRoute
   OrderSuccessRoute: typeof OrderSuccessRoute
+  ShippingChar38DeliveryRoute: typeof ShippingChar38DeliveryRoute
   SignupRoute: typeof SignupRoute
   SofasRoute: typeof SofasRoute
+  WishlistRoute: typeof WishlistRoute
   OrdersOrderIdRoute: typeof OrdersOrderIdRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
   ProductIdIndexRoute: typeof ProductIdIndexRoute
@@ -302,6 +354,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sofas': {
       id: '/sofas'
       path: '/sofas'
@@ -314,6 +373,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipping-&-delivery': {
+      id: '/shipping-&-delivery'
+      path: '/shipping-&-delivery'
+      fullPath: '/shipping-&-delivery'
+      preLoaderRoute: typeof ShippingChar38DeliveryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/order-success': {
@@ -335,6 +401,13 @@ declare module '@tanstack/react-router' {
       path: '/furnitures'
       fullPath: '/furnitures'
       preLoaderRoute: typeof FurnituresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/customize': {
@@ -384,6 +457,13 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/care-guide': {
+      id: '/care-guide'
+      path: '/care-guide'
+      fullPath: '/care-guide'
+      preLoaderRoute: typeof CareGuideRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -470,6 +550,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  CareGuideRoute: CareGuideRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ClothesRoute: ClothesRoute,
@@ -477,11 +558,14 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CurtainsRoute: CurtainsRoute,
   CustomizeRoute: CustomizeRoute,
+  FaqRoute: FaqRoute,
   FurnituresRoute: FurnituresRoute,
   LoginRoute: LoginRoute,
   OrderSuccessRoute: OrderSuccessRoute,
+  ShippingChar38DeliveryRoute: ShippingChar38DeliveryRoute,
   SignupRoute: SignupRoute,
   SofasRoute: SofasRoute,
+  WishlistRoute: WishlistRoute,
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   OrdersIndexRoute: OrdersIndexRoute,
   ProductIdIndexRoute: ProductIdIndexRoute,

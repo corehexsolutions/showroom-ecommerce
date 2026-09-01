@@ -120,7 +120,9 @@ export function Navbar() {
 
             {/* Wishlist */}
             <IconBtn ariaLabel="Wishlist">
-              <Heart className="h-[18px] w-[18px]" />
+              <Link to="/wishlist">
+                <Heart className="h-[18px] w-[18px]" />
+              </Link>
             </IconBtn>
 
             {/* Account */}

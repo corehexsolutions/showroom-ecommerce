@@ -27,17 +27,17 @@ export function Footer() {
             </div>
           </div>
 
-          <FooterCol
+          <FooterColColl
             title="Collections"
             items={["L-Shape Sofas", "Fabric Sofas", "Leather Sofas", "Wooden Sofas", "Recliners", "Sectionals"]}
           />
           <FooterCol
             title="Customer Care"
-            items={["Shipping & Delivery", "Returns", "Warranty", "Custom Orders", "Care Guide", "FAQ"]}
+            items={["Shipping & Delivery", "Custom Orders", "Care Guide", "FAQ"]}
           />
           <FooterCol
             title="Atelier"
-            items={["Our Story", "Craftsmanship", "Sustainability", "Press", "Trade Program", "Contact"]}
+            items={["Our Story", "Contact"]}
           />
 
           <div className="lg:col-span-2">
@@ -112,7 +112,7 @@ function FooterCol({ title, items }: { title: string; items: string[] }) {
       <ul className="space-y-3">
         {items.map((i) => (
           <li key={i}>
-            <a href="#" className="text-sm text-ivory/70 hover:text-[var(--brand-green-muted-dark)] transition-colors">
+            <a href={slugifyText(i)} className="text-sm text-ivory/70 hover:text-[var(--brand-green-muted-dark)] transition-colors">
               {i}
             </a>
           </li>
@@ -120,4 +120,25 @@ function FooterCol({ title, items }: { title: string; items: string[] }) {
       </ul>
     </div>
   );
+}
+
+function FooterColColl({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="lg:col-span-2">
+      <div className="text-[11px] uppercase tracking-[0.3em] text-[var(--brand-green-muted)] mb-4">{title}</div>
+      <ul className="space-y-3">
+        {items.map((i) => (
+          <li key={i}>
+            <a href='/sofas' className="text-sm text-ivory/70 hover:text-[var(--brand-green-muted-dark)] transition-colors">
+              {i}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function slugifyText(text: string): string {
+  return text.trim().replace(/\s+/g, "-");
 }

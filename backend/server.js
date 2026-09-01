@@ -15,7 +15,7 @@ const paymentRoutes = require("./routes/payment.route");
 const orderRoutes = require("./routes/order.route");
 const adminOrderRoutes = require("./routes/adminOrder.routes");
 const consultationRoutes = require("./routes/consultation.route");
-
+const wishlistRoutes = require("./routes/wishlist.routes");
 
 connectDB();
 
@@ -42,6 +42,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/consultation", consultationRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 const PORT = process.env.PORT || 5000;
 

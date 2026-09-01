@@ -6,7 +6,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { addToCart } from "@/lib/cart";
 import { CheckoutModal } from "@/components/checkout/CheckoutModal";
@@ -15,6 +15,12 @@ import {
   createBuyNowOrder,
   verifyRazorpayPayment,
 } from "@/lib/payment";
+
+import {
+  addToWishlist,
+  checkWishlist,
+  removeFromWishlist,
+} from "@/lib/wishlist";
 
 export type Product = {
   id: string;
@@ -46,15 +52,90 @@ export function ProductCard({
   const [checkoutOpen, setCheckoutOpen] =
     useState(false);
 
+  // -----------------------------
+  // WISHLIST
+  // -----------------------------
+
+  const [isWishlisted, setIsWishlisted] =
+    useState(false);
+
+  const [wishlistLoading, setWishlistLoading] =
+    useState(false);
+
+  // Check wishlist status when card loads
+  useEffect(() => {
+    let mounted = true;
+
+    const loadWishlistStatus = async () => {
+      try {
+        const wishlisted = await checkWishlist(product.id);
+
+        if (mounted) {
+          setIsWishlisted(wishlisted);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to check wishlist status:",
+          error
+        );
+      }
+    };
+
+    loadWishlistStatus();
+
+    return () => {
+      mounted = false;
+    };
+  }, [product.id]);
+
+  // -----------------------------
+  // WISHLIST TOGGLE
+  // -----------------------------
+
+  const handleWishlist = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (wishlistLoading) return;
+
+    try {
+      setWishlistLoading(true);
+
+      if (isWishlisted) {
+        await removeFromWishlist(product.id);
+        setIsWishlisted(false);
+      } else {
+        await addToWishlist(product.id);
+        setIsWishlisted(true);
+      }
+    } catch (error) {
+      console.error(
+        "Wishlist error:",
+        error
+      );
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Unable to update wishlist"
+      );
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
   const off = Math.round(
     ((product.original - product.price) /
       product.original) *
-    100
+      100
   );
 
   // -----------------------------
   // ADD TO CART
   // -----------------------------
+
   const handleAddToCart = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -92,6 +173,7 @@ export function ProductCard({
   // -----------------------------
   // BUY NOW
   // -----------------------------
+
   const handleBuyNow = (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -175,7 +257,7 @@ export function ProductCard({
             if (!verifyResponse.success) {
               throw new Error(
                 verifyResponse.message ||
-                "Payment verification failed"
+                  "Payment verification failed"
               );
             }
 
@@ -239,8 +321,7 @@ export function ProductCard({
         params={{ slug: product.slug }}
         className="block"
       >
-        <motion.article
-        >
+        <motion.article>
           <Link
             to="/product/$slug"
             params={{ slug: product.slug }}
@@ -283,14 +364,27 @@ export function ProductCard({
                 {/* Wishlist */}
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  aria-label="Wishlist"
-                  className="absolute top-4 right-4 h-10 w-10 rounded-full bg-ivory/95 backdrop-blur text-[var(--brand-green-muted)] grid place-items-center opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-[var(--brand-deep-forest-green)] hover:text-ivory"
+                  onClick={handleWishlist}
+                  disabled={wishlistLoading}
+                  aria-label={
+                    isWishlisted
+                      ? "Remove from wishlist"
+                      : "Add to wishlist"
+                  }
+                  aria-pressed={isWishlisted}
+                  className={`absolute top-4 right-4 h-10 w-10 rounded-full bg-ivory/95 backdrop-blur grid place-items-center opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-[var(--brand-deep-forest-green)] hover:text-ivory disabled:opacity-60 disabled:cursor-not-allowed ${
+                    isWishlisted
+                      ? "text-[var(--brand-deep-forest-green)] opacity-100 translate-y-0"
+                      : "text-[var(--brand-green-muted)]"
+                  }`}
                 >
-                  <Heart className="h-4 w-4" />
+                  <Heart
+                    className={`h-4 w-4 transition-all ${
+                      isWishlisted
+                        ? "fill-current scale-110"
+                        : ""
+                    }`}
+                  />
                 </button>
 
                 {/* Action buttons */}
@@ -299,7 +393,10 @@ export function ProductCard({
                   <button
                     type="button"
                     onClick={handleAddToCart}
-                    disabled={addingToCart || buyingNow}
+                    disabled={
+                      addingToCart ||
+                      buyingNow
+                    }
                     className="flex-1 bg-ivory/95 backdrop-blur text-charcoal py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] hover:text-ivory transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <ShoppingBag className="h-3.5 w-3.5" />
@@ -313,7 +410,10 @@ export function ProductCard({
                   <button
                     type="button"
                     onClick={handleBuyNow}
-                    disabled={buyingNow || addingToCart}
+                    disabled={
+                      buyingNow ||
+                      addingToCart
+                    }
                     className="flex-1 bg-[var(--brand-deep-forest-green)] text-ivory py-3.5 text-[11px] tracking-[0.25em] uppercase font-medium flex items-center justify-center gap-2 hover:bg-[var(--brand-green-muted)] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <Zap className="h-3.5 w-3.5" />
@@ -357,13 +457,13 @@ export function ProductCard({
 
                   {product.original >
                     product.price && (
-                      <span className="text-sm text-muted-foreground line-through">
-                        ₹
-                        {product.original.toLocaleString(
-                          "en-IN"
-                        )}
-                      </span>
-                    )}
+                    <span className="text-sm text-muted-foreground line-through">
+                      ₹
+                      {product.original.toLocaleString(
+                        "en-IN"
+                      )}
+                    </span>
+                  )}
                 </div>
               </div>
             </motion.article>
