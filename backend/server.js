@@ -24,6 +24,7 @@ const app = express();
 const allowedOrigins = [
   process.env.CLIENT_URL,
   process.env.CLIENT_URL_DEV,
+  "https://decorden.vercel.app",
 ];
 
 console.log(process.env.CLIENT_URL, process.env.CLIENT_URL_DEV);
