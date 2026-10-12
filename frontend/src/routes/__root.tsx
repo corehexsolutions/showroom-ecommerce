@@ -79,8 +79,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Decor Den — Luxury Sofa Showroom" },
       { name: "twitter:description", content: "Handcrafted luxury sofas, sectionals and recliners. Premium materials, timeless silhouettes, delivered nationwide." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/pMfZV7a5UqbrNc49VBphuVYedxI3/social-images/social-1783419342360-decorden-logo.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/pMfZV7a5UqbrNc49VBphuVYedxI3/social-images/social-1783419342360-decorden-logo.webp" },
+      { property: "og:image", content: "/logo.png" },
+      { name: "twitter:image", content: "/logo.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
