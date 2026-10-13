@@ -1,7 +1,7 @@
 ```yaml
-name: "Deploy Showroom Ecommerce"
+name: Deploy Showroom Ecommerce
 
-'on':
+on:
   push:
     branches:
       - main
