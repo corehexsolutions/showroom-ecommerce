@@ -30,10 +30,17 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
+        env:
+          VITE_API_URL_Public_Test: https://api.decorden.luxury/api
+          VITE_API_URL_Public: https://api.decorden.luxury/api
+          VITE_API_URL: https://api.decorden.luxury/api
         run: |
           set -eu
+          npm install --package-lock-only --ignore-scripts
           npm install
           npm run build
+          test -f .output/server/index.mjs
+          grep -R -l 'api.decorden.luxury/api' .output/public/assets
 
       - name: Verify and package files
         run: |
