@@ -32,7 +32,7 @@ jobs:
         working-directory: frontend
         run: |
           set -eu
-          npm ci
+          npm install
           npm run build
 
       - name: Verify and package files
