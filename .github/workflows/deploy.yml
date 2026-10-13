@@ -180,13 +180,10 @@ jobs:
           grep -n 'googleLogin' "$BACKEND/routes/user.route.js" || true
 
           # Confirm the production dependency is declared.
-          node -e "
-            const p = require('$BACKEND/package.json');
-            if (!p.dependencies || !p.dependencies['google-auth-library']) {
-              console.error('google-auth-library is missing from deployed package.json');
-              process.exit(1);
-            }
-          "
+          if ! grep -q '"google-auth-library"' "$BACKEND/package.json"; then
+            echo "google-auth-library is missing from deployed package.json"
+            exit 1
+          fi
 
           # Restart both Passenger applications.
           touch "$FRONTEND/tmp/restart.txt"
