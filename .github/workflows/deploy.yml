@@ -26,129 +26,33 @@ jobs:
           npm install
           npm run build
 
-      - name: Verify and package deployment files
+      - name: Inspect frontend build output
         run: |
-          test -f frontend/.output/server/index.mjs
-          test -f frontend/package.json
-          test -f frontend/server.js
-          test -f backend/server.js
+          echo "Frontend directory:"
+          ls -la frontend
 
-          tar -czf frontend-build.tar.gz \
-            -C frontend .output
+          echo "Generated server files:"
+          find frontend -maxdepth 6 -type f \
+            \( -name 'index.mjs' \
+               -o -name 'server.js' \
+               -o -name 'handler.mjs' \
+               -o -name 'index.js' \) \
+            -print
 
-          tar -czf backend-source.tar.gz \
-            --exclude='.env' \
-            --exclude='.env.*' \
-            --exclude='node_modules' \
-            --exclude='.git' \
-            --exclude='.htaccess' \
-            --exclude='tmp' \
-            --exclude='uploads' \
-            --exclude='logs' \
-            -C backend .
+          echo "Output directory tree:"
+          if [ -d frontend/.output ]; then
+            find frontend/.output -maxdepth 5 -type f | head -100
+          else
+            echo "No frontend/.output directory found"
+          fi
 
-      - name: Configure SSH
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
-        run: |
-          set -eu
+          echo "Build directory tree:"
+          if [ -d frontend/dist ]; then
+            find frontend/dist -maxdepth 3 -type f | head -50
+          else
+            echo "No frontend/dist directory found"
+          fi
 
-          test -n "$DEPLOY_KEY"
-          test -n "$DEPLOY_KNOWN_HOSTS"
-
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-
-          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
-          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null
-
-      - name: Test SSH connection
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          set -eu
-
-          test -n "$DEPLOY_HOST"
-          test -n "$DEPLOY_USER"
-
-          ssh \
-            -i ~/.ssh/deploy_key \
-            -o IdentitiesOnly=yes \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            "$DEPLOY_USER@$DEPLOY_HOST" \
-            'echo SSH connection successful'
-
-      - name: Upload deployment archives
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          set -eu
-
-          scp \
-            -i ~/.ssh/deploy_key \
-            -o IdentitiesOnly=yes \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            frontend-build.tar.gz \
-            "$DEPLOY_USER@$DEPLOY_HOST:frontend-build.tar.gz"
-
-          scp \
-            -i ~/.ssh/deploy_key \
-            -o IdentitiesOnly=yes \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            backend-source.tar.gz \
-            "$DEPLOY_USER@$DEPLOY_HOST:backend-source.tar.gz"
-
-      - name: Deploy to cPanel
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          set -eu
-
-          ssh \
-            -i ~/.ssh/deploy_key \
-            -o IdentitiesOnly=yes \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            "$DEPLOY_USER@$DEPLOY_HOST" 'bash -se' <<'REMOTE'
-          set -eu
-
-          FRONTEND="$HOME/decorden.luxury"
-          BACKEND="$HOME/api.decorden.luxury"
-
-          test -f "$FRONTEND/server.js"
-          test -f "$BACKEND/server.js"
-          test -f "$FRONTEND/.htaccess"
-          test -f "$BACKEND/.htaccess"
-
-          mkdir -p "$FRONTEND/tmp" "$BACKEND/tmp"
-
-          tar -xzf "$HOME/frontend-build.tar.gz" \
-            -C "$FRONTEND"
-
-          tar -xzf "$HOME/backend-source.tar.gz" \
-            -C "$BACKEND"
-
-          touch "$FRONTEND/tmp/restart.txt"
-          touch "$BACKEND/tmp/restart.txt"
-
-          rm -f "$HOME/frontend-build.tar.gz" \
-                "$HOME/backend-source.tar.gz"
-
-          echo "Deployment files uploaded and restart requested."
-          REMOTE
-
-      - name: Clean up SSH key
+      - name: Clean up
         if: always()
-        run: rm -f ~/.ssh/deploy_key
+        run: echo "Diagnostic run complete. No production files were changed."
