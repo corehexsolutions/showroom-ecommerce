@@ -1,7 +1,7 @@
 ```yaml
-name: Deploy Showroom Ecommerce
+name: "Deploy Showroom Ecommerce"
 
-on:
+'on':
   push:
     branches:
       - main
@@ -25,7 +25,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "22"
 
       - name: Build frontend
         working-directory: frontend
@@ -38,8 +38,7 @@ jobs:
           test -f frontend/.output/server/index.mjs
           test -f backend/server.js
 
-          tar -czf frontend-build.tar.gz \
-            -C frontend .output
+          tar -czf frontend-build.tar.gz -C frontend .output
 
           tar -czf backend-source.tar.gz \
             --exclude='.env' \
@@ -58,6 +57,8 @@ jobs:
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
         run: |
           set -eu
+          test -n "$DEPLOY_KEY"
+          test -n "$DEPLOY_KNOWN_HOSTS"
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
@@ -66,7 +67,7 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
           ssh-keygen -y -f ~/.ssh/deploy_key >/dev/null
 
-      - name: Upload archives
+      - name: Upload deployment archives
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -75,17 +76,19 @@ jobs:
           for file in frontend-build.tar.gz backend-source.tar.gz; do
             scp -i ~/.ssh/deploy_key \
               -o IdentitiesOnly=yes \
+              -o BatchMode=yes \
               -o StrictHostKeyChecking=yes \
               "$file" "$DEPLOY_USER@$DEPLOY_HOST:$file"
           done
 
-      - name: Deploy all packaged files
+      - name: Deploy to cPanel
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
           ssh -i ~/.ssh/deploy_key \
             -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
             "$DEPLOY_USER@$DEPLOY_HOST" 'bash -se' <<'REMOTE'
           set -eu
@@ -103,8 +106,8 @@ jobs:
           tar -xzf "$HOME/frontend-build.tar.gz" -C "$FRONTEND"
           tar -xzf "$HOME/backend-source.tar.gz" -C "$BACKEND"
 
-          echo "Checking deployed backend route:"
-          grep -n 'router.post("/google"' "$BACKEND/routes/user.route.js" || true
+          grep -n 'router.post("/google"' \
+            "$BACKEND/routes/user.route.js" || true
 
           touch "$FRONTEND/tmp/restart.txt"
           touch "$BACKEND/tmp/restart.txt"
