@@ -1,124 +1,12 @@
-```yaml
-name: Deploy Showroom Ecommerce
+
+name: Deployment Syntax Test
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-
-concurrency:
-  group: showroom-production-deploy
-  cancel-in-progress: false
-
 jobs:
-  deploy:
+  syntax-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Build frontend
-        working-directory: frontend
-        run: |
-          npm install
-          npm run build
-
-      - name: Package deployment files
-        run: |
-          test -f frontend/.output/server/index.mjs
-          test -f backend/server.js
-
-          tar -czf frontend-build.tar.gz -C frontend .output
-
-          tar -czf backend-source.tar.gz \
-            --exclude='.env' \
-            --exclude='.env.*' \
-            --exclude='node_modules' \
-            --exclude='.git' \
-            --exclude='.htaccess' \
-            --exclude='tmp' \
-            --exclude='uploads' \
-            --exclude='logs' \
-            -C backend .
-
-      - name: Configure SSH
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
-        run: |
-          set -eu
-          test -n "$DEPLOY_KEY"
-          test -n "$DEPLOY_KNOWN_HOSTS"
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-          ssh-keygen -y -f ~/.ssh/deploy_key >/dev/null
-
-      - name: Upload deployment archives
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          set -eu
-          for file in frontend-build.tar.gz backend-source.tar.gz; do
-            scp -i ~/.ssh/deploy_key \
-              -o IdentitiesOnly=yes \
-              -o BatchMode=yes \
-              -o StrictHostKeyChecking=yes \
-              "$file" "$DEPLOY_USER@$DEPLOY_HOST:$file"
-          done
-
-      - name: Deploy to cPanel
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          ssh -i ~/.ssh/deploy_key \
-            -o IdentitiesOnly=yes \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            "$DEPLOY_USER@$DEPLOY_HOST" 'bash -se' <<'REMOTE'
-          set -eu
-
-          FRONTEND="$HOME/decorden.luxury"
-          BACKEND="$HOME/api.decorden.luxury"
-
-          test -f "$FRONTEND/server.js"
-          test -f "$BACKEND/server.js"
-          test -f "$FRONTEND/.htaccess"
-          test -f "$BACKEND/.htaccess"
-
-          mkdir -p "$FRONTEND/tmp" "$BACKEND/tmp"
-
-          tar -xzf "$HOME/frontend-build.tar.gz" -C "$FRONTEND"
-          tar -xzf "$HOME/backend-source.tar.gz" -C "$BACKEND"
-
-          grep -n 'router.post("/google"' \
-            "$BACKEND/routes/user.route.js" || true
-
-          touch "$FRONTEND/tmp/restart.txt"
-          touch "$BACKEND/tmp/restart.txt"
-
-          rm -f "$HOME/frontend-build.tar.gz" \
-                "$HOME/backend-source.tar.gz"
-
-          echo "Deployment completed."
-          REMOTE
-
-      - name: Clean up SSH key
-        if: always()
-        run: rm -f ~/.ssh/deploy_key
-```
+      - name: Confirm workflow works
+        run: echo "GitHub Actions workflow syntax is valid"
