@@ -25,11 +25,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Build frontend
         working-directory: frontend
         run: |
-          npm install
+          set -eu
+          npm ci
           npm run build
 
       - name: Verify and package files
@@ -37,8 +40,19 @@ jobs:
           set -eu
 
           test -f frontend/.output/server/index.mjs
+          test -f frontend/.output/nitro.json
           test -f backend/server.js
           test -f backend/routes/user.route.js
+
+          grep -q '"preset": "node-server"' frontend/.output/nitro.json
+
+          node -e "
+            const p = require('./backend/package.json');
+            if (!p.dependencies || !p.dependencies['google-auth-library']) {
+              console.error('google-auth-library is missing from backend dependencies');
+              process.exit(1);
+            }
+          "
 
           tar -czf frontend-build.tar.gz \
             -C frontend .output
@@ -115,36 +129,94 @@ jobs:
 
           FRONTEND="$HOME/decorden.luxury"
           BACKEND="$HOME/api.decorden.luxury"
+          RELEASE_ID="$(date +%Y%m%d%H%M%S)"
+          FRONTEND_BACKUP="$HOME/decorden-frontend-output-backup-$RELEASE_ID"
 
+          # Verify production configuration before deployment.
           test -f "$FRONTEND/server.js"
           test -f "$BACKEND/server.js"
           test -f "$FRONTEND/.htaccess"
           test -f "$BACKEND/.htaccess"
           test -f "$FRONTEND/.env"
           test -f "$BACKEND/.env"
-
           test -f "$HOME/frontend-build.tar.gz"
           test -f "$HOME/backend-source.tar.gz"
 
           mkdir -p "$FRONTEND/tmp" "$BACKEND/tmp"
 
-          tar -xzf "$HOME/frontend-build.tar.gz" -C "$FRONTEND"
+          # Extract the new frontend build into a temporary directory.
+          STAGING="$HOME/decorden-frontend-staging-$RELEASE_ID"
+          mkdir -p "$STAGING"
+          tar -xzf "$HOME/frontend-build.tar.gz" -C "$STAGING"
+
+          # Validate the new frontend build before touching the live output.
+          test -f "$STAGING/.output/server/index.mjs"
+          test -f "$STAGING/.output/nitro.json"
+          grep -q '"preset": "node-server"' "$STAGING/.output/nitro.json"
+
+          # Back up the current frontend output.
+          if [ -d "$FRONTEND/.output" ]; then
+            mv "$FRONTEND/.output" "$FRONTEND_BACKUP"
+          fi
+
+          # Install the fresh output without obsolete assets.
+          if ! mv "$STAGING/.output" "$FRONTEND/.output"; then
+            if [ -d "$FRONTEND_BACKUP" ]; then
+              mv "$FRONTEND_BACKUP" "$FRONTEND/.output"
+            fi
+            echo "Frontend deployment failed; previous output restored."
+            exit 1
+          fi
+
+          rmdir "$STAGING" 2>/dev/null || true
+
+          # Deploy backend source, preserving .env, node_modules,
+          # .htaccess, uploads, logs and tmp.
           tar -xzf "$HOME/backend-source.tar.gz" -C "$BACKEND"
 
-          test -f "$FRONTEND/.output/server/index.mjs"
           test -f "$BACKEND/routes/user.route.js"
 
           echo "Checking deployed Google login route:"
           grep -n 'googleLogin' "$BACKEND/routes/user.route.js" || true
 
+          # Confirm the production dependency is declared.
+          node -e "
+            const p = require('$BACKEND/package.json');
+            if (!p.dependencies || !p.dependencies['google-auth-library']) {
+              console.error('google-auth-library is missing from deployed package.json');
+              process.exit(1);
+            }
+          "
+
+          # Restart both Passenger applications.
           touch "$FRONTEND/tmp/restart.txt"
           touch "$BACKEND/tmp/restart.txt"
 
           rm -f "$HOME/frontend-build.tar.gz"
           rm -f "$HOME/backend-source.tar.gz"
 
+          echo "Frontend deployed with Node.js preset."
+          echo "Previous frontend output backup: $FRONTEND_BACKUP"
           echo "Deployment files copied successfully."
           REMOTE
+
+      - name: Verify live backend API
+        run: |
+          set -eu
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent --show-error \
+              --max-time 15 \
+              https://api.decorden.luxury/api/products \
+              -o /tmp/products-response.json; then
+              echo "Backend products API is responding successfully."
+              exit 0
+            fi
+            echo "Backend API not ready yet; retrying..."
+            sleep 5
+          done
+
+          echo "Backend API health check failed."
+          exit 1
 
       - name: Clean up SSH key
         if: always()
