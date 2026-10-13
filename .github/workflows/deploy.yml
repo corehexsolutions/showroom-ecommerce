@@ -34,6 +34,7 @@ jobs:
           VITE_API_URL_Public_Test: https://api.decorden.luxury/api
           VITE_API_URL_Public: https://api.decorden.luxury/api
           VITE_API_URL: https://api.decorden.luxury/api
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
         run: |
           set -eu
           npm install --package-lock-only --ignore-scripts
