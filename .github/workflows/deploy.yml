@@ -1,0 +1,92 @@
+
+name: Deploy Showroom Ecommerce
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+          npm run build
+
+      - name: Package deployment files
+        run: |
+          test -f frontend/.output/server/index.mjs
+          tar -czf frontend-build.tar.gz -C frontend .output
+
+          tar -czf backend-source.tar.gz \
+            --exclude='.env' \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            --exclude='.htaccess' \
+            --exclude='tmp' \
+            -C backend .
+
+      - name: Configure SSH
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Upload and deploy
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          SSH="ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
+
+          scp -i ~/.ssh/deploy_key frontend-build.tar.gz \
+            "$DEPLOY_USER@$DEPLOY_HOST:frontend-build.tar.gz"
+
+          scp -i ~/.ssh/deploy_key backend-source.tar.gz \
+            "$DEPLOY_USER@$DEPLOY_HOST:backend-source.tar.gz"
+
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" 'set -e
+            mkdir -p "$HOME/decorden.luxury/tmp"
+            mkdir -p "$HOME/api.decorden.luxury/tmp"
+
+            tar -xzf "$HOME/frontend-build.tar.gz" \
+              -C "$HOME/decorden.luxury"
+
+            tar -xzf "$HOME/backend-source.tar.gz" \
+              -C "$HOME/api.decorden.luxury"
+
+            touch "$HOME/decorden.luxury/tmp/restart.txt"
+            touch "$HOME/api.decorden.luxury/tmp/restart.txt"
+
+            rm -f "$HOME/frontend-build.tar.gz" \
+                  "$HOME/backend-source.tar.gz"
+          '
+
+      - name: Clean up SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
