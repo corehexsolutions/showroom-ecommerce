@@ -86,7 +86,7 @@ export function Navbar() {
             <img
               src="/logo.png"
               alt="Decor Den"
-              className="h-12"
+              className="h-14"
             />
           </Link>
 
