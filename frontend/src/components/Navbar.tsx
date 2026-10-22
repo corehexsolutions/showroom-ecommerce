@@ -60,7 +60,7 @@ export function Navbar() {
     <>
       {/* Top announcement */}
       <div className="bg-charcoal text-ivory text-[11px] tracking-[0.25em] uppercase py-2.5 text-center font-light">
-        Complimentary white-glove delivery on orders above ₹75,000
+        Complimentary white-glove delivery on orders above ₹75,000 within Vadodara
       </div>
 
       {/* Navbar */}
